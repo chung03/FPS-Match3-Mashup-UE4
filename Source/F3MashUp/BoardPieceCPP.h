@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BoardPieceHolderCPP.h"
 #include "BoardPieceCPP.generated.h"
 
 UCLASS()
@@ -23,4 +24,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ABoardPieceHolderCPP* OwningPieceHolder;
 };
