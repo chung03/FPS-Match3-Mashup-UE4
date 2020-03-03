@@ -28,6 +28,10 @@ void ABoardPieceHolderCPP::Tick(float DeltaTime)
 
 void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other)
 {
+	if (Other == NULL) {
+		return;
+	}
+
 	// Swap ownership of pieces
 	ABoardPieceCPP* temp = CurrentBoardPiece;
 	CurrentBoardPiece = Other->CurrentBoardPiece;
