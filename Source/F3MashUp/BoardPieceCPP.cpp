@@ -2,6 +2,7 @@
 
 
 #include "BoardPieceCPP.h"
+#include "BoardPieceHolderCPP.h"
 
 // Sets default values
 ABoardPieceCPP::ABoardPieceCPP()

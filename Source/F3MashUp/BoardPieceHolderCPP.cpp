@@ -2,6 +2,7 @@
 
 
 #include "BoardPieceHolderCPP.h"
+#include "BoardPieceCPP.h"
 
 // Sets default values
 ABoardPieceHolderCPP::ABoardPieceHolderCPP()
@@ -25,3 +26,15 @@ void ABoardPieceHolderCPP::Tick(float DeltaTime)
 
 }
 
+void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other)
+{
+	// Swap ownership of pieces
+	ABoardPieceCPP* temp = CurrentBoardPiece;
+	CurrentBoardPiece = Other->CurrentBoardPiece;
+	Other->CurrentBoardPiece = temp;
+
+	// Swap location of the pieces
+	FVector otherLocation = Other->CurrentBoardPiece->GetActorLocation();
+	Other->CurrentBoardPiece->SetActorLocation(CurrentBoardPiece->GetActorLocation());
+	CurrentBoardPiece->SetActorLocation(otherLocation);
+}
