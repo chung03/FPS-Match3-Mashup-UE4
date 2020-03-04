@@ -44,10 +44,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ABoardPieceCPP* CurrentBoardPiece;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<class ABoardPieceCPP> > PossibleBoardPieces;
+
 	UFUNCTION(BlueprintCallable)
 	void DoSwap(ABoardPieceHolderCPP* Other);
 
-
 	UFUNCTION(BlueprintCallable)
 	void CheckForMatches();
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnNewBoardPiece();
+
+	UFUNCTION(BlueprintCallable)
+	void ReplaceCurrentBoardPiece();
 };

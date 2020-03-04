@@ -4,6 +4,8 @@
 #include "BoardPieceHolderCPP.h"
 #include "BoardPieceCPP.h"
 #include "Containers/Array.h"
+#include "Math/UnrealMathUtility.h"
+#include "Engine/World.h"
 
 // Sets default values
 ABoardPieceHolderCPP::ABoardPieceHolderCPP()
@@ -46,25 +48,6 @@ void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other)
 
 void ABoardPieceHolderCPP::CheckForMatches()
 {
-	bool isMatch = false;
-
-	// Check for matches where this board piece is in the middle
-	if (ConnectedBoardPieceHolders[NORTH_INDEX] != NULL && ConnectedBoardPieceHolders[SOUTH_INDEX] != NULL)
-	{
-		if (ConnectedBoardPieceHolders[NORTH_INDEX]->CurrentBoardPiece->IsSameType(CurrentBoardPiece)
-			&& ConnectedBoardPieceHolders[SOUTH_INDEX]->CurrentBoardPiece->IsSameType(CurrentBoardPiece)) {
-			isMatch = true;
-		}
-	}
-
-	if (ConnectedBoardPieceHolders[EAST_INDEX] != NULL && ConnectedBoardPieceHolders[WEST_INDEX] != NULL)
-	{
-		if (ConnectedBoardPieceHolders[EAST_INDEX]->CurrentBoardPiece->IsSameType(CurrentBoardPiece)
-			&& ConnectedBoardPieceHolders[WEST_INDEX]->CurrentBoardPiece->IsSameType(CurrentBoardPiece)) {
-			isMatch = true;
-		}
-	}
-
 	/*
 	Check for matches by checking for matching pieces in all 4 directions
 	If there are enough pieces that match (North-to-South and East-to-West), then remove them
@@ -73,42 +56,69 @@ void ABoardPieceHolderCPP::CheckForMatches()
 	// Get all the matching pieces now in all directions
 	TArray<ABoardPieceHolderCPP*> NorthSouthMatchingBoardPieces = TArray<ABoardPieceHolderCPP*>();
 	ABoardPieceHolderCPP* currentNorthPiece = ConnectedBoardPieceHolders[NORTH_INDEX];
-	while (currentNorthPiece != NULL)
+	while (currentNorthPiece != NULL && currentNorthPiece->CurrentBoardPiece->IsSameType(CurrentBoardPiece))
 	{
 		NorthSouthMatchingBoardPieces.Add(currentNorthPiece);
 		currentNorthPiece = currentNorthPiece->ConnectedBoardPieceHolders[NORTH_INDEX];
 	}
 
 	ABoardPieceHolderCPP* currentSouthPiece = ConnectedBoardPieceHolders[SOUTH_INDEX];
-	while (currentSouthPiece != NULL)
+	while (currentSouthPiece != NULL && currentSouthPiece->CurrentBoardPiece->IsSameType(CurrentBoardPiece))
 	{
 		NorthSouthMatchingBoardPieces.Add(currentSouthPiece);
-		currentSouthPiece = currentNorthPiece->ConnectedBoardPieceHolders[SOUTH_INDEX];
+		currentSouthPiece = currentSouthPiece->ConnectedBoardPieceHolders[SOUTH_INDEX];
 	}
 
 	TArray<ABoardPieceHolderCPP*> EastWestMatchingBoardPieces = TArray<ABoardPieceHolderCPP*>();
 	ABoardPieceHolderCPP* currentEastPiece = ConnectedBoardPieceHolders[EAST_INDEX];
-	while (currentEastPiece != NULL)
+	while (currentEastPiece != NULL && currentEastPiece->CurrentBoardPiece->IsSameType(CurrentBoardPiece))
 	{
 		EastWestMatchingBoardPieces.Add(currentEastPiece);
 		currentEastPiece = currentEastPiece->ConnectedBoardPieceHolders[EAST_INDEX];
 	}
 
 	ABoardPieceHolderCPP* currentWestPiece = ConnectedBoardPieceHolders[WEST_INDEX];
-	while (currentWestPiece != NULL)
+	while (currentWestPiece != NULL && currentWestPiece->CurrentBoardPiece->IsSameType(CurrentBoardPiece))
 	{
 		EastWestMatchingBoardPieces.Add(currentWestPiece);
 		currentWestPiece = currentWestPiece->ConnectedBoardPieceHolders[WEST_INDEX];
 	}
 
+	bool isMatch = false;
+
 	// Replace those pieces if there is a match
 	if (NorthSouthMatchingBoardPieces.Num() >= 2) {
+		isMatch = true;
 		for (TCheckedPointerIterator< ABoardPieceHolderCPP*, int32 > it = NorthSouthMatchingBoardPieces.begin(); it != NorthSouthMatchingBoardPieces.end(); ++it) {
-			//(*it)->
+			(*it)->ReplaceCurrentBoardPiece();
 		}
 	}
 
 	if (EastWestMatchingBoardPieces.Num() >= 2) {
-
+		isMatch = true;
+		for (TCheckedPointerIterator< ABoardPieceHolderCPP*, int32 > it = EastWestMatchingBoardPieces.begin(); it != EastWestMatchingBoardPieces.end(); ++it) {
+			(*it)->ReplaceCurrentBoardPiece();
+		}
 	}
+
+	if (isMatch) {
+		ReplaceCurrentBoardPiece();
+	}
+}
+
+void ABoardPieceHolderCPP::SpawnNewBoardPiece()
+{
+	int randomIndex = FMath::RandRange(0, PossibleBoardPieces.Num() - 1);
+	TSubclassOf<class ABoardPieceCPP> newBoardPieceType = PossibleBoardPieces[randomIndex];
+
+	FTransform transform = GetActorTransform();
+
+	CurrentBoardPiece = GetWorld()->SpawnActor<ABoardPieceCPP>(newBoardPieceType.Get(), transform);
+	CurrentBoardPiece->OwningPieceHolder = this;
+}
+
+void ABoardPieceHolderCPP::ReplaceCurrentBoardPiece()
+{
+	GetWorld()->DestroyActor(CurrentBoardPiece);
+	SpawnNewBoardPiece();
 }
