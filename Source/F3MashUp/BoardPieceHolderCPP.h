@@ -46,4 +46,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DoSwap(ABoardPieceHolderCPP* Other);
+
+
+	UFUNCTION(BlueprintCallable)
+	void CheckForMatches();
 };

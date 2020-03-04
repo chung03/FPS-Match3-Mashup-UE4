@@ -26,3 +26,8 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 
 }
 
+// Called every frame
+bool ABoardPieceCPP::IsSameType(ABoardPieceCPP* Other)
+{
+	return BoardPieceType == Other->BoardPieceType;
+}

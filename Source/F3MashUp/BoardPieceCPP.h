@@ -25,4 +25,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ABoardPieceHolderCPP* OwningPieceHolder;
+
+	/*
+	Quick way to get Board Piece Types working. Each Board Piece Type should have a different value for this
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int BoardPieceType = 0;
+
+	bool IsSameType(ABoardPieceCPP* Other);
 };
