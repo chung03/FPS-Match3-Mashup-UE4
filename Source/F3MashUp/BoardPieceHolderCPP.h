@@ -53,9 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CheckForMatches();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(Server, Reliable)
 	void SpawnNewBoardPiece();
 
-	UFUNCTION(BlueprintCallable)
-	void ReplaceCurrentBoardPiece();
+	UFUNCTION(Server, Reliable)
+	void RemoveCurrentBoardPiece();
 };
