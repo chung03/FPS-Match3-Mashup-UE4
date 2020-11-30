@@ -55,6 +55,11 @@ void ABoardPieceHolderCPP::SpawnNewBoardPiece_Implementation()
 
 	CurrentBoardPiece = GetWorld()->SpawnActor<ABoardPieceCPP>(newBoardPieceType.Get(), transform);
 	CurrentBoardPiece->OwningPieceHolder = this;
+
+	int randomRotationFactor = FMath::RandRange(0, 3);
+	FRotator rotateAngles = FRotator(0, 90 * randomRotationFactor, 0);
+
+	CurrentBoardPiece->SetActorRotation(rotateAngles);
 }
 
 void ABoardPieceHolderCPP::RemoveCurrentBoardPiece_Implementation()
