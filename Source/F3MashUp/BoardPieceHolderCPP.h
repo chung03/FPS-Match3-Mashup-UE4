@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "BoardPieceHolderCPP.generated.h"
 
+UENUM(BlueprintType)
+enum class BOARDPIECEHOLDERMODE : uint8 {
+	IDLE UMETA(DisplayName = "Spawn Piece and nothing else"),
+	RANDOM_SPAWN UMETA(DisplayName = "Periodically Spawn Random Piece"),
+	RANDOM_SWAP UMETA(DisplayName = "Swap Pieces Randomly")
+};
+
 UCLASS()
 class F3MASHUP_API ABoardPieceHolderCPP : public AActor
 {
@@ -48,7 +55,7 @@ public:
 	TArray<TSubclassOf<class ABoardPieceCPP> > PossibleBoardPieces;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool RandomSpawnMode;
+	BOARDPIECEHOLDERMODE RandomSpawnMode;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RandomChangeFrequency;
@@ -57,16 +64,22 @@ public:
 	FTimerHandle PieceChangeTimer;
 
 	UFUNCTION(BlueprintCallable)
-	void DoSwap(ABoardPieceHolderCPP* Other);
-
-	UFUNCTION(BlueprintCallable)
 	void CheckForMatches();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRandomSwap();
+
+	UFUNCTION(Server, Reliable)
+	void ServerDoSwap(ABoardPieceHolderCPP* Other);
 
 	UFUNCTION(Server, Reliable)
 	void ServerSpawnNewBoardPiece();
 
 	UFUNCTION(Server, Reliable)
-	void ServerRemoveCurrentBoardPiece();
+	void ServerReplaceCurrentBoardPiece();
 
+	void _DoSwap(ABoardPieceHolderCPP* Other);
 	void _SpawnNewBoardPiece();
+	void _DestroyBoardPiece();
 };
+

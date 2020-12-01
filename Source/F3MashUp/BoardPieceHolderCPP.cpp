@@ -25,9 +25,15 @@ void ABoardPieceHolderCPP::BeginPlay()
 		ServerSpawnNewBoardPiece();
 
 		// If Random spawn mode is enabled, start timers now.
-		if (RandomSpawnMode) {
+		if (RandomSpawnMode == BOARDPIECEHOLDERMODE::RANDOM_SPAWN) {
 			UWorld* World = GetWorld();
-			World->GetTimerManager().SetTimer(PieceChangeTimer, this, &ABoardPieceHolderCPP::ServerRemoveCurrentBoardPiece_Implementation, RandomChangeFrequency, true);
+			World->GetTimerManager().SetTimer(PieceChangeTimer, this, &ABoardPieceHolderCPP::ServerReplaceCurrentBoardPiece, RandomChangeFrequency, true);
+		}
+
+		// If Random spawn mode is enabled, start timers now.
+		if (RandomSpawnMode == BOARDPIECEHOLDERMODE::RANDOM_SWAP) {
+			UWorld* World = GetWorld();
+			World->GetTimerManager().SetTimer(PieceChangeTimer, this, &ABoardPieceHolderCPP::ServerRandomSwap, RandomChangeFrequency, true);
 		}
 	}
 }
@@ -38,9 +44,35 @@ void ABoardPieceHolderCPP::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other)
+void ABoardPieceHolderCPP::ServerRandomSwap_Implementation()
 {
-	
+	int randomIndex = FMath::RandRange(0, ConnectedBoardPieceHolders.Num() - 1);
+
+	if (ConnectedBoardPieceHolders[randomIndex] != NULL) {
+		_DoSwap(ConnectedBoardPieceHolders[randomIndex]);
+	}
+}
+
+void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Other)
+{
+	_DoSwap(Other);
+}
+
+void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
+{
+	if (!Other || !Other->CurrentBoardPiece) {
+		return;
+	}
+
+	// Swap ownership of pieces
+	ABoardPieceCPP* temp = CurrentBoardPiece;
+	CurrentBoardPiece = Other->CurrentBoardPiece;
+	Other->CurrentBoardPiece = temp;
+
+	// Swap location of the pieces
+	FVector otherLocation = Other->CurrentBoardPiece->GetActorLocation();
+	Other->CurrentBoardPiece->SetActorLocation(CurrentBoardPiece->GetActorLocation());
+	CurrentBoardPiece->SetActorLocation(otherLocation);
 }
 
 void ABoardPieceHolderCPP::CheckForMatches()
@@ -68,11 +100,15 @@ void ABoardPieceHolderCPP::_SpawnNewBoardPiece()
 	CurrentBoardPiece->SetActorRotation(rotateAngles);
 }
 
-void ABoardPieceHolderCPP::ServerRemoveCurrentBoardPiece_Implementation()
+void ABoardPieceHolderCPP::ServerReplaceCurrentBoardPiece_Implementation()
+{
+	_DestroyBoardPiece();
+	_SpawnNewBoardPiece();
+}
+
+void ABoardPieceHolderCPP::_DestroyBoardPiece()
 {
 	if (CurrentBoardPiece) {
 		GetWorld()->DestroyActor(CurrentBoardPiece);
 	}
-
-	_SpawnNewBoardPiece();
 }
