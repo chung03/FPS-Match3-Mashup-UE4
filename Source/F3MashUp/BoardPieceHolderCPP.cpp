@@ -22,7 +22,13 @@ void ABoardPieceHolderCPP::BeginPlay()
 	
 	// Only Server should spawn a piece
 	if (GetLocalRole() == ROLE_Authority) {
-		SpawnNewBoardPiece();
+		ServerSpawnNewBoardPiece();
+
+		// If Random spawn mode is enabled, start timers now.
+		if (RandomSpawnMode) {
+			UWorld* World = GetWorld();
+			World->GetTimerManager().SetTimer(PieceChangeTimer, this, &ABoardPieceHolderCPP::ServerRemoveCurrentBoardPiece_Implementation, RandomChangeFrequency, true);
+		}
 	}
 }
 
@@ -41,13 +47,13 @@ void ABoardPieceHolderCPP::CheckForMatches()
 {
 }
 
-void ABoardPieceHolderCPP::SpawnNewBoardPiece_Implementation()
+void ABoardPieceHolderCPP::ServerSpawnNewBoardPiece_Implementation()
 {
-	// Only Server should spawn a piece
-	//if (GetLocalRole() == ROLE_Authority) {
-	//	return;
-	//}
+	_SpawnNewBoardPiece();
+}
 
+void ABoardPieceHolderCPP::_SpawnNewBoardPiece()
+{
 	int randomIndex = FMath::RandRange(0, PossibleBoardPieces.Num() - 1);
 	TSubclassOf<class ABoardPieceCPP> newBoardPieceType = PossibleBoardPieces[randomIndex];
 
@@ -62,7 +68,11 @@ void ABoardPieceHolderCPP::SpawnNewBoardPiece_Implementation()
 	CurrentBoardPiece->SetActorRotation(rotateAngles);
 }
 
-void ABoardPieceHolderCPP::RemoveCurrentBoardPiece_Implementation()
+void ABoardPieceHolderCPP::ServerRemoveCurrentBoardPiece_Implementation()
 {
-	GetWorld()->DestroyActor(CurrentBoardPiece);
+	if (CurrentBoardPiece) {
+		GetWorld()->DestroyActor(CurrentBoardPiece);
+	}
+
+	_SpawnNewBoardPiece();
 }

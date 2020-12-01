@@ -47,6 +47,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TSubclassOf<class ABoardPieceCPP> > PossibleBoardPieces;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool RandomSpawnMode;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RandomChangeFrequency;
+
+	/** A timer handle used for providing the rate delay in-between spawns.*/
+	FTimerHandle PieceChangeTimer;
+
 	UFUNCTION(BlueprintCallable)
 	void DoSwap(ABoardPieceHolderCPP* Other);
 
@@ -54,8 +63,10 @@ public:
 	void CheckForMatches();
 
 	UFUNCTION(Server, Reliable)
-	void SpawnNewBoardPiece();
+	void ServerSpawnNewBoardPiece();
 
 	UFUNCTION(Server, Reliable)
-	void RemoveCurrentBoardPiece();
+	void ServerRemoveCurrentBoardPiece();
+
+	void _SpawnNewBoardPiece();
 };
