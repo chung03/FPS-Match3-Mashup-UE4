@@ -27,7 +27,7 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 	if(IsMoving){
 		TimeSinceMovementStarted += DeltaTime;
 		
-		float alpha = (TimeToFinishMovement - TimeSinceMovementStarted)/ TimeToFinishMovement;
+		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted)/ TimeToFinishMovement, 0.0f, 1.0f);
 		
 		SetActorLocation(FMath::Lerp(RootLocation, RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), alpha));
 		
