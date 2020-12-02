@@ -32,5 +32,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int BoardPieceType = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoardPieceSpawnHeight = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeToFinishMovement = 0;
+
+	bool IsMoving = false;
+
 	bool IsSameType(ABoardPieceCPP* Other);
+
+	UFUNCTION(Server, Reliable)
+	void ServerDoSpawnMovement();
+
+	void _DoSpawnMovement();
+
+private:
+	FVector RootLocation;
+	
+	float TimeSinceMovementStarted;
 };

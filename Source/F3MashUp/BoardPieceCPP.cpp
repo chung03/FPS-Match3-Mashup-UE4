@@ -24,10 +24,37 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(IsMoving){
+		TimeSinceMovementStarted += DeltaTime;
+		
+		float alpha = (TimeToFinishMovement - TimeSinceMovementStarted)/ TimeToFinishMovement;
+		
+		SetActorLocation(FMath::Lerp(RootLocation, RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), alpha));
+		
+		if(TimeSinceMovementStarted >= TimeToFinishMovement){
+			IsMoving = false;
+		}
+	}
 }
 
-// Called every frame
 bool ABoardPieceCPP::IsSameType(ABoardPieceCPP* Other)
 {
 	return BoardPieceType == Other->BoardPieceType;
+}
+
+void ABoardPieceCPP::ServerDoSpawnMovement_Implementation()
+{
+	_DoSpawnMovement();
+}
+
+void ABoardPieceCPP::_DoSpawnMovement()
+{
+	if(IsMoving){
+		return;
+	}
+	
+	IsMoving = true;
+	TimeSinceMovementStarted = 0.0f;
+	RootLocation = GetActorLocation();
+	SetActorLocation(RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight));
 }

@@ -98,6 +98,7 @@ void ABoardPieceHolderCPP::_SpawnNewBoardPiece()
 	FRotator rotateAngles = FRotator(0, 90 * randomRotationFactor, 0);
 
 	CurrentBoardPiece->SetActorRotation(rotateAngles);
+	CurrentBoardPiece->ServerDoSpawnMovement();
 }
 
 void ABoardPieceHolderCPP::ServerReplaceCurrentBoardPiece_Implementation()
