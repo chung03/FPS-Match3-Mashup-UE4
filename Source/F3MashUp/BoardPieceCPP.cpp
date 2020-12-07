@@ -24,6 +24,8 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float swapTimeToFinishMovement = TimeToFinishMovement / 3.0f;
+
 	if(currentState == BOARD_PIECE_STATE::SPAWNING){
 		TimeSinceMovementStarted += DeltaTime;
 		
@@ -38,22 +40,22 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 	else if (currentState == BOARD_PIECE_STATE::SWAP_UNDER) {
 		TimeSinceMovementStarted += DeltaTime;
 
-		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
 
 		SetActorLocation(FMath::Lerp(SwapTargetLocation, RootLocation, alpha));
 
-		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
 			currentState = BOARD_PIECE_STATE::IDLE;
 		}
 	}
 	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_1) {
 		TimeSinceMovementStarted += DeltaTime;
 
-		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
 
 		SetActorLocation(FMath::Lerp(RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation, alpha));
 
-		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
 			currentState = BOARD_PIECE_STATE::SWAP_OVER_2;
 			TimeSinceMovementStarted = 0.0f;
 		}
@@ -61,11 +63,11 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_2) {
 		TimeSinceMovementStarted += DeltaTime;
 
-		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
 
 		SetActorLocation(FMath::Lerp(SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), alpha));
 
-		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
 			currentState = BOARD_PIECE_STATE::SWAP_OVER_3;
 			TimeSinceMovementStarted = 0.0f;
 		}
@@ -73,11 +75,11 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_3) {
 		TimeSinceMovementStarted += DeltaTime;
 
-		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
 
 		SetActorLocation(FMath::Lerp(SwapTargetLocation, SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), alpha));
 
-		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
 			currentState = BOARD_PIECE_STATE::IDLE;
 			TimeSinceMovementStarted = 0.0f;
 		}
