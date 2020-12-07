@@ -10,6 +10,15 @@ UCLASS()
 class F3MASHUP_API ABoardPieceCPP : public AActor
 {
 	GENERATED_BODY()
+
+	enum class BOARD_PIECE_STATE {
+		IDLE,
+		SPAWNING,
+		SWAP_UNDER,
+		SWAP_OVER_1,
+		SWAP_OVER_2,
+		SWAP_OVER_3
+	};
 	
 public:	
 	// Sets default values for this actor's properties
@@ -36,9 +45,11 @@ public:
 	float BoardPieceSpawnHeight = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoardPieceSwapHeight = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeToFinishMovement = 0;
 
-	bool IsMoving = false;
 
 	bool IsSameType(ABoardPieceCPP* Other);
 
@@ -47,8 +58,19 @@ public:
 
 	void _DoSpawnMovement();
 
+	UFUNCTION(Server, Reliable)
+	void ServerDoSwapMovement(FVector TargetLocation, bool isMovingUnder);
+
+	void _DoSwapMovement(FVector TargetLocation, bool isMovingUnder);
+
+	bool IsPieceMoving();
+
 private:
 	FVector RootLocation;
+
+	FVector SwapTargetLocation;
 	
 	float TimeSinceMovementStarted;
+
+	BOARD_PIECE_STATE currentState = BOARD_PIECE_STATE::IDLE;
 };

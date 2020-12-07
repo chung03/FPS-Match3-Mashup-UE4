@@ -60,9 +60,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RandomChangeFrequency;
 
-	/** A timer handle used for providing the rate delay in-between spawns.*/
-	FTimerHandle PieceChangeTimer;
-
 	UFUNCTION(BlueprintCallable)
 	void CheckForMatches();
 
@@ -81,5 +78,12 @@ public:
 	void _DoSwap(ABoardPieceHolderCPP* Other);
 	void _SpawnNewBoardPiece();
 	void _DestroyBoardPiece();
+
+private:
+
+	/** A timer handle used for providing the rate delay in-between spawns.*/
+	FTimerHandle PieceChangeTimer;
+
+	bool IsSafeToChangePiece();
 };
 

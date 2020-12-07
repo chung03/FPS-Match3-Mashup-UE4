@@ -64,15 +64,21 @@ void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
 		return;
 	}
 
+	// Swap location of the pieces
+	/*
+	FVector otherLocation = Other->CurrentBoardPiece->GetActorLocation();
+	Other->CurrentBoardPiece->SetActorLocation(CurrentBoardPiece->GetActorLocation());
+	CurrentBoardPiece->SetActorLocation(otherLocation);
+	*/
+
+	// Start process of swapping pieces
+	Other->CurrentBoardPiece->ServerDoSwapMovement(GetActorLocation(), true);
+	CurrentBoardPiece->ServerDoSwapMovement(Other->GetActorLocation(), false);
+
 	// Swap ownership of pieces
 	ABoardPieceCPP* temp = CurrentBoardPiece;
 	CurrentBoardPiece = Other->CurrentBoardPiece;
 	Other->CurrentBoardPiece = temp;
-
-	// Swap location of the pieces
-	FVector otherLocation = Other->CurrentBoardPiece->GetActorLocation();
-	Other->CurrentBoardPiece->SetActorLocation(CurrentBoardPiece->GetActorLocation());
-	CurrentBoardPiece->SetActorLocation(otherLocation);
 }
 
 void ABoardPieceHolderCPP::CheckForMatches()
@@ -112,4 +118,13 @@ void ABoardPieceHolderCPP::_DestroyBoardPiece()
 	if (CurrentBoardPiece) {
 		GetWorld()->DestroyActor(CurrentBoardPiece);
 	}
+}
+
+bool ABoardPieceHolderCPP::IsSafeToChangePiece()
+{
+	if (CurrentBoardPiece && !CurrentBoardPiece->IsPieceMoving()) {
+		return true;
+	}
+
+	return false;
 }

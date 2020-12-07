@@ -24,7 +24,7 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(IsMoving){
+	if(currentState == BOARD_PIECE_STATE::SPAWNING){
 		TimeSinceMovementStarted += DeltaTime;
 		
 		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted)/ TimeToFinishMovement, 0.0f, 1.0f);
@@ -32,7 +32,54 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 		SetActorLocation(FMath::Lerp(RootLocation, RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), alpha));
 		
 		if(TimeSinceMovementStarted >= TimeToFinishMovement){
-			IsMoving = false;
+			currentState = BOARD_PIECE_STATE::IDLE;
+		}
+	}
+	else if (currentState == BOARD_PIECE_STATE::SWAP_UNDER) {
+		TimeSinceMovementStarted += DeltaTime;
+
+		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+
+		SetActorLocation(FMath::Lerp(SwapTargetLocation, RootLocation, alpha));
+
+		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+			currentState = BOARD_PIECE_STATE::IDLE;
+		}
+	}
+	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_1) {
+		TimeSinceMovementStarted += DeltaTime;
+
+		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+
+		SetActorLocation(FMath::Lerp(RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation, alpha));
+
+		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+			currentState = BOARD_PIECE_STATE::SWAP_OVER_2;
+			TimeSinceMovementStarted = 0.0f;
+		}
+	}
+	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_2) {
+		TimeSinceMovementStarted += DeltaTime;
+
+		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+
+		SetActorLocation(FMath::Lerp(SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), alpha));
+
+		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+			currentState = BOARD_PIECE_STATE::SWAP_OVER_3;
+			TimeSinceMovementStarted = 0.0f;
+		}
+	}
+	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_3) {
+		TimeSinceMovementStarted += DeltaTime;
+
+		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted) / TimeToFinishMovement, 0.0f, 1.0f);
+
+		SetActorLocation(FMath::Lerp(SwapTargetLocation, SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), alpha));
+
+		if (TimeSinceMovementStarted >= TimeToFinishMovement) {
+			currentState = BOARD_PIECE_STATE::IDLE;
+			TimeSinceMovementStarted = 0.0f;
 		}
 	}
 }
@@ -49,12 +96,39 @@ void ABoardPieceCPP::ServerDoSpawnMovement_Implementation()
 
 void ABoardPieceCPP::_DoSpawnMovement()
 {
-	if(IsMoving){
+	if(currentState != BOARD_PIECE_STATE::IDLE){
 		return;
 	}
 	
-	IsMoving = true;
+	currentState = BOARD_PIECE_STATE::SPAWNING;
 	TimeSinceMovementStarted = 0.0f;
 	RootLocation = GetActorLocation();
 	SetActorLocation(RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight));
+}
+
+void ABoardPieceCPP::ServerDoSwapMovement_Implementation(FVector TargetLocation, bool isMovingUnder)
+{
+	_DoSwapMovement(TargetLocation, isMovingUnder);
+}
+
+void ABoardPieceCPP::_DoSwapMovement(FVector TargetLocation, bool isMovingUnder)
+{
+	if (currentState != BOARD_PIECE_STATE::IDLE) {
+		return;
+	}
+
+	if (isMovingUnder) {
+		currentState = BOARD_PIECE_STATE::SWAP_UNDER;
+	}
+	else {
+		currentState = BOARD_PIECE_STATE::SWAP_OVER_1;
+	}
+
+	TimeSinceMovementStarted = 0.0f;
+	RootLocation = GetActorLocation();
+	SwapTargetLocation = TargetLocation;
+}
+
+bool ABoardPieceCPP::IsPieceMoving(){
+	return currentState != BOARD_PIECE_STATE::IDLE;
 }
