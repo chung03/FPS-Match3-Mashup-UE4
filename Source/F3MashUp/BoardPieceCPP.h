@@ -48,7 +48,13 @@ public:
 	float BoardPieceSwapHeight = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TimeToFinishMovement = 0;
+	float TimeToFinishSpawnMovement = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeToFinishSwapUnderMovement = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeToFinishSwapOverStepMovement = 0;
 
 
 	bool IsSameType(ABoardPieceCPP* Other);
@@ -71,6 +77,8 @@ private:
 	FVector SwapTargetLocation;
 	
 	float TimeSinceMovementStarted;
+
+	void _DoPieceMove(FVector TargetLocation, FVector StartingLocation, BOARD_PIECE_STATE nextState, float TimeToDoMove);
 
 	BOARD_PIECE_STATE currentState = BOARD_PIECE_STATE::IDLE;
 };

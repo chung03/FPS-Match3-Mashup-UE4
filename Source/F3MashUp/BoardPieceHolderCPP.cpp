@@ -60,16 +60,9 @@ void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Oth
 
 void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
 {
-	if (!Other || !Other->CurrentBoardPiece) {
+	if (!Other || !Other->CurrentBoardPiece || Other->CurrentBoardPiece->IsPieceMoving() || CurrentBoardPiece->IsPieceMoving()) {
 		return;
 	}
-
-	// Swap location of the pieces
-	/*
-	FVector otherLocation = Other->CurrentBoardPiece->GetActorLocation();
-	Other->CurrentBoardPiece->SetActorLocation(CurrentBoardPiece->GetActorLocation());
-	CurrentBoardPiece->SetActorLocation(otherLocation);
-	*/
 
 	// Start process of swapping pieces
 	Other->CurrentBoardPiece->ServerDoSwapMovement(GetActorLocation(), true);

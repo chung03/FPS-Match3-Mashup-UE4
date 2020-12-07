@@ -24,65 +24,24 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	float swapTimeToFinishMovement = TimeToFinishMovement / 3.0f;
+	if (currentState != BOARD_PIECE_STATE::IDLE) {
+		TimeSinceMovementStarted += DeltaTime;
+	}
 
 	if(currentState == BOARD_PIECE_STATE::SPAWNING){
-		TimeSinceMovementStarted += DeltaTime;
-		
-		float alpha = FMath::Clamp((TimeToFinishMovement - TimeSinceMovementStarted)/ TimeToFinishMovement, 0.0f, 1.0f);
-		
-		SetActorLocation(FMath::Lerp(RootLocation, RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), alpha));
-		
-		if(TimeSinceMovementStarted >= TimeToFinishMovement){
-			currentState = BOARD_PIECE_STATE::IDLE;
-		}
+		_DoPieceMove(RootLocation, RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), BOARD_PIECE_STATE::IDLE, TimeToFinishSpawnMovement);
 	}
 	else if (currentState == BOARD_PIECE_STATE::SWAP_UNDER) {
-		TimeSinceMovementStarted += DeltaTime;
-
-		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
-
-		SetActorLocation(FMath::Lerp(SwapTargetLocation, RootLocation, alpha));
-
-		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
-			currentState = BOARD_PIECE_STATE::IDLE;
-		}
+		_DoPieceMove(SwapTargetLocation, RootLocation, BOARD_PIECE_STATE::IDLE, TimeToFinishSwapUnderMovement);
 	}
 	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_1) {
-		TimeSinceMovementStarted += DeltaTime;
-
-		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
-
-		SetActorLocation(FMath::Lerp(RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation, alpha));
-
-		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
-			currentState = BOARD_PIECE_STATE::SWAP_OVER_2;
-			TimeSinceMovementStarted = 0.0f;
-		}
+		_DoPieceMove(RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation, BOARD_PIECE_STATE::SWAP_OVER_2, TimeToFinishSwapOverStepMovement);
 	}
 	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_2) {
-		TimeSinceMovementStarted += DeltaTime;
-
-		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
-
-		SetActorLocation(FMath::Lerp(SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), alpha));
-
-		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
-			currentState = BOARD_PIECE_STATE::SWAP_OVER_3;
-			TimeSinceMovementStarted = 0.0f;
-		}
+		_DoPieceMove(SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), RootLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), BOARD_PIECE_STATE::SWAP_OVER_3, TimeToFinishSwapOverStepMovement);
 	}
 	else if (currentState == BOARD_PIECE_STATE::SWAP_OVER_3) {
-		TimeSinceMovementStarted += DeltaTime;
-
-		float alpha = FMath::Clamp((swapTimeToFinishMovement - TimeSinceMovementStarted) / swapTimeToFinishMovement, 0.0f, 1.0f);
-
-		SetActorLocation(FMath::Lerp(SwapTargetLocation, SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), alpha));
-
-		if (TimeSinceMovementStarted >= swapTimeToFinishMovement) {
-			currentState = BOARD_PIECE_STATE::IDLE;
-			TimeSinceMovementStarted = 0.0f;
-		}
+		_DoPieceMove(SwapTargetLocation, SwapTargetLocation + FVector(0.0f, 0.0f, BoardPieceSwapHeight), BOARD_PIECE_STATE::IDLE, TimeToFinishSwapOverStepMovement);
 	}
 }
 
@@ -133,4 +92,15 @@ void ABoardPieceCPP::_DoSwapMovement(FVector TargetLocation, bool isMovingUnder)
 
 bool ABoardPieceCPP::IsPieceMoving(){
 	return currentState != BOARD_PIECE_STATE::IDLE;
+}
+
+void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocation, BOARD_PIECE_STATE nextState, float TimeToDoMove) {
+	float alpha = FMath::Clamp((TimeToDoMove - TimeSinceMovementStarted) / TimeToDoMove, 0.0f, 1.0f);
+
+	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
+
+	if (TimeSinceMovementStarted >= TimeToDoMove) {
+		currentState = nextState;
+		TimeSinceMovementStarted = 0.0f;
+	}
 }
