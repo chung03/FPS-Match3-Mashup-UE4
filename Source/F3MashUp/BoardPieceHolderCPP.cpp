@@ -60,7 +60,7 @@ void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Oth
 
 void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
 {
-	if (!Other || !Other->CurrentBoardPiece || Other->CurrentBoardPiece->IsPieceMoving() || CurrentBoardPiece->IsPieceMoving()) {
+	if (!Other || !Other->IsSafeToChangePiece() || !IsSafeToChangePiece()) {
 		return;
 	}
 
@@ -72,6 +72,9 @@ void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
 	ABoardPieceCPP* temp = CurrentBoardPiece;
 	CurrentBoardPiece = Other->CurrentBoardPiece;
 	Other->CurrentBoardPiece = temp;
+
+	Other->CurrentBoardPiece->OwningPieceHolder = Other;
+	CurrentBoardPiece->OwningPieceHolder = this;
 }
 
 void ABoardPieceHolderCPP::CheckForMatches()
@@ -108,7 +111,7 @@ void ABoardPieceHolderCPP::ServerReplaceCurrentBoardPiece_Implementation()
 
 void ABoardPieceHolderCPP::_DestroyBoardPiece()
 {
-	if (CurrentBoardPiece) {
+	if (CurrentBoardPiece && IsSafeToChangePiece()) {
 		GetWorld()->DestroyActor(CurrentBoardPiece);
 	}
 }
