@@ -60,7 +60,7 @@ void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Oth
 
 void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
 {
-	if (!Other || !Other->IsSafeToChangePiece() || !IsSafeToChangePiece()) {
+	if (!Other || !Other->IsSafeToChangePiece() || !IsSafeToChangePiece() || !IsConnectedPiece(Other)) {
 		return;
 	}
 
@@ -120,6 +120,21 @@ bool ABoardPieceHolderCPP::IsSafeToChangePiece()
 {
 	if (CurrentBoardPiece && !CurrentBoardPiece->IsPieceMoving()) {
 		return true;
+	}
+
+	return false;
+}
+
+bool ABoardPieceHolderCPP::IsConnectedPiece(ABoardPieceHolderCPP* Other)
+{
+	int randomIndex = FMath::RandRange(0, ConnectedBoardPieceHolders.Num() - 1);
+
+	for (int index = 0; index < ConnectedBoardPieceHolders.Num() - 1; index++)
+	{
+		if (Other == ConnectedBoardPieceHolders[index])
+		{
+			return true;
+		}
 	}
 
 	return false;

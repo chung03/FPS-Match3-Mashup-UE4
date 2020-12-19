@@ -85,5 +85,7 @@ private:
 	FTimerHandle PieceChangeTimer;
 
 	bool IsSafeToChangePiece();
+
+	bool IsConnectedPiece(ABoardPieceHolderCPP* Other);
 };
 
