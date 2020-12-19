@@ -136,6 +136,8 @@ void AF3MashUpCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("TurnRate", this, &AF3MashUpCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AF3MashUpCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("ChangePawn", IE_Pressed, this, &AF3MashUpCharacter::OnChangePawn);
 }
 
 void AF3MashUpCharacter::OnFire()
@@ -297,4 +299,9 @@ bool AF3MashUpCharacter::EnableTouchscreenMovement(class UInputComponent* Player
 	}
 	
 	return false;
+}
+
+void AF3MashUpCharacter::OnChangePawn()
+{
+	
 }

@@ -104,3 +104,8 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 		TimeSinceMovementStarted = 0.0f;
 	}
 }
+
+void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other)
+{
+	OwningPieceHolder->ServerDoSwap(Other->OwningPieceHolder);
+}

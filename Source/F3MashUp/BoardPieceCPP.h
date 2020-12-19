@@ -71,6 +71,9 @@ public:
 
 	bool IsPieceMoving();
 
+	UFUNCTION(BlueprintCallable)
+	void AttemptSwap(ABoardPieceCPP* Other);
+
 private:
 	FVector RootLocation;
 
