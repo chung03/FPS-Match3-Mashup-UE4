@@ -114,30 +114,28 @@ void AF3MashUpCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	check(PlayerInputComponent);
 
 	// Bind jump events
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	// PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	// PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	// Bind fire event
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AF3MashUpCharacter::OnFire);
+	// PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AF3MashUpCharacter::OnFire);
 
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AF3MashUpCharacter::OnResetVR);
+	// PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AF3MashUpCharacter::OnResetVR);
 
 	// Bind movement events
-	PlayerInputComponent->BindAxis("MoveForward", this, &AF3MashUpCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AF3MashUpCharacter::MoveRight);
+	// PlayerInputComponent->BindAxis("MoveForward", this, &AF3MashUpCharacter::MoveForward);
+	// PlayerInputComponent->BindAxis("MoveRight", this, &AF3MashUpCharacter::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AF3MashUpCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AF3MashUpCharacter::LookUpAtRate);
-
-	PlayerInputComponent->BindAction("ChangePawn", IE_Pressed, this, &AF3MashUpCharacter::OnChangePawn);
+	// PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	// PlayerInputComponent->BindAxis("TurnRate", this, &AF3MashUpCharacter::TurnAtRate);
+	// PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	// PlayerInputComponent->BindAxis("LookUpRate", this, &AF3MashUpCharacter::LookUpAtRate);
 }
 
 void AF3MashUpCharacter::OnFire()
@@ -299,9 +297,4 @@ bool AF3MashUpCharacter::EnableTouchscreenMovement(class UInputComponent* Player
 	}
 	
 	return false;
-}
-
-void AF3MashUpCharacter::OnChangePawn()
-{
-	
 }
