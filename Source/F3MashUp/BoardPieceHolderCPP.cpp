@@ -127,9 +127,7 @@ bool ABoardPieceHolderCPP::IsSafeToChangePiece()
 
 bool ABoardPieceHolderCPP::IsConnectedPiece(ABoardPieceHolderCPP* Other)
 {
-	int randomIndex = FMath::RandRange(0, ConnectedBoardPieceHolders.Num() - 1);
-
-	for (int index = 0; index < ConnectedBoardPieceHolders.Num() - 1; index++)
+	for (int index = 0; index < ConnectedBoardPieceHolders.Num(); index++)
 	{
 		if (Other == ConnectedBoardPieceHolders[index])
 		{
