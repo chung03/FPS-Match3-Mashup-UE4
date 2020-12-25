@@ -102,7 +102,16 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 	if (TimeSinceMovementStarted >= TimeToDoMove) {
 		currentState = nextState;
 		TimeSinceMovementStarted = 0.0f;
+
+		if (currentState == BOARD_PIECE_STATE::IDLE) {
+			_OnPieceMoveFinish();
+		}
 	}
+}
+
+void ABoardPieceCPP::_OnPieceMoveFinish()
+{
+	OwningPieceHolder->ServerCheckForMatches();
 }
 
 void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other)

@@ -83,5 +83,7 @@ private:
 
 	void _DoPieceMove(FVector TargetLocation, FVector StartingLocation, BOARD_PIECE_STATE nextState, float TimeToDoMove);
 
+	void _OnPieceMoveFinish();
+
 	BOARD_PIECE_STATE currentState = BOARD_PIECE_STATE::IDLE;
 };

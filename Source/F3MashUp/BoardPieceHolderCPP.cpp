@@ -77,8 +77,70 @@ void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
 	CurrentBoardPiece->OwningPieceHolder = this;
 }
 
-void ABoardPieceHolderCPP::CheckForMatches()
+void ABoardPieceHolderCPP::ServerCheckForMatches_Implementation()
 {
+	_CheckForMatches();
+}
+
+void ABoardPieceHolderCPP::_CheckForMatches()
+{
+	// No matches allowed when moving pieces
+	if (!IsSafeToChangePiece()) {
+		return;
+	}
+
+	// This board piece holder was not set up properly, don't do the match checking
+	if (ConnectedBoardPieceHolders.Num() != 4) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("A board piece holder's connected board pieces array was not set up properly!")));
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
+		return;
+	}
+
+	// Find pieces with the same type in north and south directions
+	TArray<ABoardPieceHolderCPP*> northSouthMatchingPieces = TArray<ABoardPieceHolderCPP*>();
+	TArray<ABoardPieceHolderCPP*> eastWestMatchingPieces = TArray<ABoardPieceHolderCPP*>();
+
+	_CheckNumMatchingPiecesInDirection(northSouthMatchingPieces, 0, 1);
+	_CheckNumMatchingPiecesInDirection(eastWestMatchingPieces, 2, 3);
+
+	bool isMatch = false;
+
+	if (northSouthMatchingPieces.Num() >= 2) {
+		for(ABoardPieceHolderCPP* other : northSouthMatchingPieces) {
+			other->ServerReplaceCurrentBoardPiece();
+		}
+
+		isMatch = true;
+	}
+
+	if (eastWestMatchingPieces.Num() >= 2) {
+		for (ABoardPieceHolderCPP* other : eastWestMatchingPieces) {
+			other->ServerReplaceCurrentBoardPiece();
+		}
+
+		isMatch = true;
+	}
+
+	if (isMatch) {
+		ServerReplaceCurrentBoardPiece();
+	}
+}
+
+void ABoardPieceHolderCPP::_CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> MatchingPieces, int directionIndex1, int directionIndex2)
+{
+	ABoardPieceHolderCPP* nextDirectionPieceHolder = ConnectedBoardPieceHolders[directionIndex1];
+	while (nextDirectionPieceHolder && IsSamePieceType(nextDirectionPieceHolder))
+	{
+		MatchingPieces.Add(nextDirectionPieceHolder);
+		nextDirectionPieceHolder = nextDirectionPieceHolder->ConnectedBoardPieceHolders[directionIndex1];
+	}
+
+	nextDirectionPieceHolder = ConnectedBoardPieceHolders[directionIndex2];
+	while (nextDirectionPieceHolder && IsSamePieceType(nextDirectionPieceHolder))
+	{
+		MatchingPieces.Add(nextDirectionPieceHolder);
+		nextDirectionPieceHolder = nextDirectionPieceHolder->ConnectedBoardPieceHolders[directionIndex2];
+	}
 }
 
 void ABoardPieceHolderCPP::ServerSpawnNewBoardPiece_Implementation()
@@ -113,6 +175,7 @@ void ABoardPieceHolderCPP::_DestroyBoardPiece()
 {
 	if (CurrentBoardPiece && IsSafeToChangePiece()) {
 		GetWorld()->DestroyActor(CurrentBoardPiece);
+
 	}
 }
 
@@ -133,6 +196,16 @@ bool ABoardPieceHolderCPP::IsConnectedPiece(ABoardPieceHolderCPP* Other)
 		{
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool ABoardPieceHolderCPP::IsSamePieceType(ABoardPieceHolderCPP* Other)
+{
+	if (Other && Other->IsSafeToChangePiece() && CurrentBoardPiece && CurrentBoardPiece->IsSameType(Other->CurrentBoardPiece))
+	{
+		return true;
 	}
 
 	return false;
