@@ -126,7 +126,7 @@ void ABoardPieceHolderCPP::_CheckForMatches()
 	}
 }
 
-void ABoardPieceHolderCPP::_CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> MatchingPieces, int directionIndex1, int directionIndex2)
+void ABoardPieceHolderCPP::_CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> &MatchingPieces, int directionIndex1, int directionIndex2)
 {
 	ABoardPieceHolderCPP* nextDirectionPieceHolder = ConnectedBoardPieceHolders[directionIndex1];
 	while (nextDirectionPieceHolder && IsSamePieceType(nextDirectionPieceHolder))
@@ -175,7 +175,6 @@ void ABoardPieceHolderCPP::_DestroyBoardPiece()
 {
 	if (CurrentBoardPiece && IsSafeToChangePiece()) {
 		GetWorld()->DestroyActor(CurrentBoardPiece);
-
 	}
 }
 

@@ -87,7 +87,7 @@ private:
 	bool IsSamePieceType(ABoardPieceHolderCPP* Other);
 	
 	void _CheckForMatches();
-	void _CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> MatchingPieces, int directionIndex1, int directionIndex2);
+	void _CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> &MatchingPieces, int directionIndex1, int directionIndex2);
 	void _DoSwap(ABoardPieceHolderCPP* Other);
 	void _SpawnNewBoardPiece();
 	void _DestroyBoardPiece();
