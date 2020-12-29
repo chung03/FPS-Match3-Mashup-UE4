@@ -189,6 +189,16 @@ void AF3MashUpCharacter::OnFire()
 
 void AF3MashUpCharacter::OnRotateBoardPiece(float degrees)
 {
+	ServerDoRotateBoardPiece(degrees);
+}
+
+void AF3MashUpCharacter::ServerDoRotateBoardPiece_Implementation(float degrees)
+{
+	_DoRotateBoardPiece(degrees);
+}
+
+void AF3MashUpCharacter::_DoRotateBoardPiece(float degrees)
+{
 	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
 	FVector Start = GetActorLocation() + (ForwardVector * LineTraceStartDistance);
 	FVector End = ((ForwardVector * LineTraceEndDistance) + Start);
@@ -207,7 +217,6 @@ void AF3MashUpCharacter::OnRotateBoardPiece(float degrees)
 		}
 	}
 }
-
 
 void AF3MashUpCharacter::OnResetVR()
 {
