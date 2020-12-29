@@ -80,11 +80,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint32 bUsingMotionControllers : 1;
 
+	/** How far away from the character the line trace will start.
+	   This is to prevent line traces from hitting the body of the FPS character */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
+	float LineTraceStartDistance = 20.0f;
+
+	/** How far line traces will go */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
+	float LineTraceEndDistance = 1000.0f;
+
 protected:
 	
 	/** Fires a projectile. */
 	UFUNCTION(BlueprintCallable)
 	void OnFire();
+
+	UFUNCTION(BlueprintCallable)
+	void OnRotateBoardPiece(float degrees);
 
 	/** Resets HMD orientation and position in VR. */
 	UFUNCTION(BlueprintCallable)

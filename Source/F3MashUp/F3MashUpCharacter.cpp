@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "BoardPieceCPP.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -185,6 +186,28 @@ void AF3MashUpCharacter::OnFire()
 		}
 	}
 }
+
+void AF3MashUpCharacter::OnRotateBoardPiece(float degrees)
+{
+	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+	FVector Start = GetActorLocation() + (ForwardVector * LineTraceStartDistance);
+	FVector End = ((ForwardVector * LineTraceEndDistance) + Start);
+
+	FHitResult OutHit;
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
+	{
+		if (OutHit.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
+		{
+			FRotator rotator;
+			rotator.Pitch = 0;
+			rotator.Yaw = degrees;
+			rotator.Roll = 0;
+			OutHit.GetActor()->AddActorWorldRotation(rotator);
+		}
+	}
+}
+
 
 void AF3MashUpCharacter::OnResetVR()
 {
