@@ -12,6 +12,7 @@
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "BoardPieceCPP.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -20,6 +21,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AF3MashUpCharacter::AF3MashUpCharacter()
 {
+	//bReplicates = true;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
@@ -104,6 +107,17 @@ void AF3MashUpCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+
+	Health = MaxHealth;
+	CanFire = true;
+}
+
+void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AF3MashUpCharacter, Health);
+	DOREPLIFETIME(AF3MashUpCharacter, CanFire);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -114,77 +128,13 @@ void AF3MashUpCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
-	// Bind jump events
-	// PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	// PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	// Bind fire event
-	// PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AF3MashUpCharacter::OnFire);
-
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
-
-	// PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AF3MashUpCharacter::OnResetVR);
-
-	// Bind movement events
-	// PlayerInputComponent->BindAxis("MoveForward", this, &AF3MashUpCharacter::MoveForward);
-	// PlayerInputComponent->BindAxis("MoveRight", this, &AF3MashUpCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	// PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	// PlayerInputComponent->BindAxis("TurnRate", this, &AF3MashUpCharacter::TurnAtRate);
-	// PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	// PlayerInputComponent->BindAxis("LookUpRate", this, &AF3MashUpCharacter::LookUpAtRate);
 }
 
 void AF3MashUpCharacter::OnFire()
 {
-	// try and fire a projectile
-	if (ProjectileClass != NULL)
-	{
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			if (bUsingMotionControllers)
-			{
-				const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
-				const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
-				World->SpawnActor<AF3MashUpProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-			}
-			else
-			{
-				const FRotator SpawnRotation = GetControlRotation();
-				// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-				const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
-
-				//Set Spawn Collision Handling Override
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-				// spawn the projectile at the muzzle
-				World->SpawnActor<AF3MashUpProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			}
-		}
-	}
-
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
+	ServerOnFire();
 }
 
 void AF3MashUpCharacter::OnRotateBoardPiece(float degrees)
@@ -215,6 +165,80 @@ void AF3MashUpCharacter::_DoRotateBoardPiece(float degrees)
 			rotator.Roll = 0;
 			OutHit.GetActor()->AddActorWorldRotation(rotator);
 		}
+	}
+}
+
+void AF3MashUpCharacter::ServerOnFire_Implementation() 
+{
+	_OnFire();
+}
+
+void AF3MashUpCharacter::_OnFire()
+{
+	if (!CanFire) {
+		return;
+	}
+
+	CanFire = false;
+
+	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+	FVector Start = GetActorLocation() + (ForwardVector * LineTraceStartDistance);
+	FVector End = ((ForwardVector * LineTraceEndDistance) + Start);
+
+	FHitResult OutHit;
+
+	GetWorldTimerManager().SetTimer(CanFireTimer, this, &AF3MashUpCharacter::AllowFire, FireRate, false);
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_OnFire - An object was detected")));
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OutHit.GetActor()->GetFullName());
+
+		if (OutHit.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
+		{
+			AF3MashUpCharacter* other = Cast<AF3MashUpCharacter, AActor>(OutHit.GetActor());
+
+			other->ServerOnDamaged(1.0f);
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_OnFire - An object was not detected")));
+	}
+}
+
+void AF3MashUpCharacter::AllowFire()
+{
+	CanFire = true;
+}
+
+void AF3MashUpCharacter::StartFiring()
+{
+	GetWorldTimerManager().SetTimer(KeepFiringTimer, this, &AF3MashUpCharacter::OnFire, FireRate, true);
+}
+
+void AF3MashUpCharacter::StopFiring()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Timer should be cleared now");
+	GetWorldTimerManager().ClearTimer(KeepFiringTimer);
+}
+
+void AF3MashUpCharacter::ServerOnDamaged_Implementation(float damage)
+{
+	_OnDamaged(damage);
+}
+
+void AF3MashUpCharacter::_OnDamaged(float damage)
+{
+	Health -= damage;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player's HP is: %f"), Health));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
+
+	if (Health <= 0.0f)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player died")));
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
 	}
 }
 

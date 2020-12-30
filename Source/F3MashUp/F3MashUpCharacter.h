@@ -45,6 +45,18 @@ class AF3MashUpCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UMotionControllerComponent* L_MotionController;
 
+	UPROPERTY(Replicated)
+	float Health;
+
+	UPROPERTY(Replicated)
+	bool CanFire;
+
+	/** A timer handle used for providing the rate delay in-between shooting.*/
+	FTimerHandle CanFireTimer;
+
+	/** A timer handle used to let players shoot as long as they hold down the fire button*/
+	FTimerHandle KeepFiringTimer;
+
 public:
 	AF3MashUpCharacter();
 
@@ -64,17 +76,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	FVector GunOffset;
 
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AF3MashUpProjectile> ProjectileClass;
-
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	class USoundBase* FireSound;
-
-	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	class UAnimMontage* FireAnimation;
+	float FireRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	float MaxHealth;
 
 	/** Whether to use motion controller location for aiming. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -91,7 +97,13 @@ public:
 
 protected:
 	
-	/** Fires a projectile. */
+	UFUNCTION(BlueprintCallable)
+	void StartFiring();
+
+	UFUNCTION(BlueprintCallable)
+	void StopFiring();
+
+	/** Fires at a target. */
 	UFUNCTION(BlueprintCallable)
 	void OnFire();
 
@@ -143,6 +155,18 @@ private:
 	void ServerDoRotateBoardPiece(float degrees);
 
 	void _DoRotateBoardPiece(float degrees);
+
+	UFUNCTION(Server, Reliable)
+	void ServerOnFire();
+
+	void _OnFire();
+
+	UFUNCTION(Server, Reliable)
+	void ServerOnDamaged(float damage);
+
+	void _OnDamaged(float damage);
+
+	void AllowFire();
 
 protected:
 	// APawn interface
