@@ -152,14 +152,14 @@ protected:
 private:
 
 	UFUNCTION(Server, Reliable)
-	void ServerDoRotateBoardPiece(float degrees);
+	void ServerDoRotateBoardPiece(float degrees, FVector ForwardVector);
 
-	void _DoRotateBoardPiece(float degrees);
+	void _DoRotateBoardPiece(float degrees, FVector ForwardVector);
 
 	UFUNCTION(Server, Reliable)
-	void ServerOnFire();
+	void ServerOnFire(FVector ForwardVector);
 
-	void _OnFire();
+	void _OnFire(FVector ForwardVector);
 
 	UFUNCTION(Server, Reliable)
 	void ServerOnDamaged(float damage);
