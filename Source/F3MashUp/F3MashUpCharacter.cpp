@@ -110,6 +110,8 @@ void AF3MashUpCharacter::BeginPlay()
 
 	Health = MaxHealth;
 	CanFire = true;
+	InitialSpawnLocation = GetActorLocation();
+	InitialSpawnRotation = GetActorRotation();
 }
 
 void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

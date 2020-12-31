@@ -57,6 +57,9 @@ class AF3MashUpCharacter : public ACharacter
 	/** A timer handle used to let players shoot as long as they hold down the fire button*/
 	FTimerHandle KeepFiringTimer;
 
+	FVector InitialSpawnLocation;
+	FRotator InitialSpawnRotation;
+
 public:
 	AF3MashUpCharacter();
 
