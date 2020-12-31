@@ -243,6 +243,8 @@ void AF3MashUpCharacter::_OnDamaged(float damage)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player died")));
 		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
+
+		Destroy();
 	}
 }
 
