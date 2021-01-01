@@ -101,6 +101,12 @@ public:
 protected:
 	
 	UFUNCTION(BlueprintCallable)
+	float GetMaxHealth();
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealth();
+
+	UFUNCTION(BlueprintCallable)
 	void StartFiring();
 
 	UFUNCTION(BlueprintCallable)

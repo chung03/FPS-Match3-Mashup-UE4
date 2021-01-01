@@ -134,6 +134,16 @@ void AF3MashUpCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	EnableTouchscreenMovement(PlayerInputComponent);
 }
 
+float AF3MashUpCharacter::GetMaxHealth()
+{
+	return MaxHealth;
+}
+
+float AF3MashUpCharacter::GetHealth()
+{
+	return Health;
+}
+
 void AF3MashUpCharacter::OnFire()
 {
 	// Get the rotation on client, but server will do the actual raycast
