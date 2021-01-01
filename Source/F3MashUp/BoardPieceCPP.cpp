@@ -116,5 +116,5 @@ void ABoardPieceCPP::_OnPieceMoveFinish()
 
 void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other)
 {
-	OwningPieceHolder->ServerDoSwap(Other->OwningPieceHolder);
+	OwningPieceHolder->DoSwap(Other->OwningPieceHolder);
 }

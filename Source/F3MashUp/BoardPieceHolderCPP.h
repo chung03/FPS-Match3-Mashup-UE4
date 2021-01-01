@@ -35,6 +35,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void BeginDestroy() override;
+
 	/*
 	This is the array where connected Board Piece Holders should go.
 	Board Piece Holders in this array are can be used for matches and swap board pieces with this Board Piece Holder.
@@ -63,8 +65,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRandomSwap();
 
-	UFUNCTION(Server, Reliable)
-	void ServerDoSwap(ABoardPieceHolderCPP* Other);
+	UFUNCTION(BlueprintCallable)
+	void DoSwap(ABoardPieceHolderCPP* Other);
 
 	UFUNCTION(Server, Reliable)
 	void ServerSpawnNewBoardPiece();
@@ -85,6 +87,10 @@ private:
 	bool IsConnectedPiece(ABoardPieceHolderCPP* Other);
 
 	bool IsSamePieceType(ABoardPieceHolderCPP* Other);
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerDoSwap(ABoardPieceHolderCPP* Other);
 	
 	void _CheckForMatches();
 	void _CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> &MatchingPieces, int directionIndex1, int directionIndex2);

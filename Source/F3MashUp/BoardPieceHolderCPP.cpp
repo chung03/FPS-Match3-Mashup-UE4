@@ -44,6 +44,15 @@ void ABoardPieceHolderCPP::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABoardPieceHolderCPP::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	if (CurrentBoardPiece) {
+		GetWorld()->DestroyActor(CurrentBoardPiece);
+	}
+}
+
 void ABoardPieceHolderCPP::ServerRandomSwap_Implementation()
 {
 	int randomIndex = FMath::RandRange(0, ConnectedBoardPieceHolders.Num() - 1);
@@ -51,6 +60,11 @@ void ABoardPieceHolderCPP::ServerRandomSwap_Implementation()
 	if (ConnectedBoardPieceHolders[randomIndex] != NULL) {
 		_DoSwap(ConnectedBoardPieceHolders[randomIndex]);
 	}
+}
+
+void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other)
+{
+	ServerDoSwap(Other);
 }
 
 void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Other)
