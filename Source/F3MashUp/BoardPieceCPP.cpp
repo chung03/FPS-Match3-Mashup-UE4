@@ -31,6 +31,9 @@ void ABoardPieceCPP::Tick(float DeltaTime)
 	if(currentState == BOARD_PIECE_STATE::SPAWNING){
 		_DoPieceMove(RootLocation, RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), BOARD_PIECE_STATE::IDLE, TimeToFinishSpawnMovement);
 	}
+	else if (currentState == BOARD_PIECE_STATE::SWAP_UNDER_WAIT) {
+		_DoPieceMove(RootLocation, RootLocation, BOARD_PIECE_STATE::SWAP_UNDER, TimeToFinishSwapUnderWait);
+	}
 	else if (currentState == BOARD_PIECE_STATE::SWAP_UNDER) {
 		_DoPieceMove(SwapTargetLocation, RootLocation, BOARD_PIECE_STATE::IDLE, TimeToFinishSwapUnderMovement);
 	}
@@ -79,7 +82,7 @@ void ABoardPieceCPP::_DoSwapMovement(FVector TargetLocation, bool isMovingUnder)
 	}
 
 	if (isMovingUnder) {
-		currentState = BOARD_PIECE_STATE::SWAP_UNDER;
+		currentState = BOARD_PIECE_STATE::SWAP_UNDER_WAIT;
 	}
 	else {
 		currentState = BOARD_PIECE_STATE::SWAP_OVER_1;

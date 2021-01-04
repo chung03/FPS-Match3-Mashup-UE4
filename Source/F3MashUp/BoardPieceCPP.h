@@ -14,6 +14,7 @@ class F3MASHUP_API ABoardPieceCPP : public AActor
 	enum class BOARD_PIECE_STATE {
 		IDLE,
 		SPAWNING,
+		SWAP_UNDER_WAIT,
 		SWAP_UNDER,
 		SWAP_OVER_1,
 		SWAP_OVER_2,
@@ -52,6 +53,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeToFinishSwapUnderMovement = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeToFinishSwapUnderWait = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeToFinishSwapOverStepMovement = 0;
