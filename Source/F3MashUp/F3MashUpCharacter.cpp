@@ -112,7 +112,19 @@ void AF3MashUpCharacter::BeginPlay()
 	CanFire = true;
 	InitialSpawnLocation = GetActorLocation();
 	InitialSpawnRotation = GetActorRotation();
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AF3MashUpCharacter::OnHit);
+
 }
+
+void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnHit - An object was hit"));
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnHit - An object was hit")));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+}
+
 
 void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
@@ -235,7 +247,7 @@ void AF3MashUpCharacter::StartFiring()
 
 void AF3MashUpCharacter::StopFiring()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Timer should be cleared now");
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Timer should be cleared now");
 	GetWorldTimerManager().ClearTimer(KeepFiringTimer);
 }
 
@@ -248,13 +260,13 @@ void AF3MashUpCharacter::_OnDamaged(float damage)
 {
 	Health -= damage;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player's HP is: %f"), Health));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player's HP is: %f"), Health));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
 
 	if (Health <= 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player died")));
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("An FPS Player died")));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, GetFullName());
 
 		Destroy();
 	}
