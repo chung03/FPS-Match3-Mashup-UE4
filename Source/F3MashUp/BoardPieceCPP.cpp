@@ -3,6 +3,9 @@
 
 #include "BoardPieceCPP.h"
 #include "BoardPieceHolderCPP.h"
+#include "F3MashUpCharacter.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogBoardPiece, Warning, All);
 
 // Sets default values
 ABoardPieceCPP::ABoardPieceCPP()
@@ -100,7 +103,22 @@ bool ABoardPieceCPP::IsPieceMoving(){
 void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocation, BOARD_PIECE_STATE nextState, float TimeToDoMove) {
 	float alpha = FMath::Clamp((TimeToDoMove - TimeSinceMovementStarted) / TimeToDoMove, 0.0f, 1.0f);
 
-	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
+	FHitResult OutSweepHitResult;
+
+	
+	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha), true, &OutSweepHitResult);
+	if (OutSweepHitResult.Actor.IsValid()) {
+		UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Move Sweep Hit: %s"), *(OutSweepHitResult.Actor->GetFullName()));
+		
+		if (OutSweepHitResult.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
+		{
+			AF3MashUpCharacter* fpsChar = Cast<AF3MashUpCharacter>(OutSweepHitResult.GetActor());
+			fpsChar->CheckIfPlayerCrushed();
+		}
+	}
+
+	//SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
+
 
 	if (TimeSinceMovementStarted >= TimeToDoMove) {
 		currentState = nextState;

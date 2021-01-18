@@ -114,6 +114,8 @@ void AF3MashUpCharacter::BeginPlay()
 	InitialSpawnRotation = GetActorRotation();
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AF3MashUpCharacter::OnHit);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AF3MashUpCharacter::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AF3MashUpCharacter::OnEndOverlap);
 
 }
 
@@ -123,6 +125,115 @@ void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnHit - An object was hit")));
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+
+	_DoCapsuleCheck();
+}
+
+void AF3MashUpCharacter::OnBeginOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnBeginOverlap - An object started overlap"));
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnBeginOverlap - An object started overlap")));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+
+	_DoCapsuleCheck();
+}
+
+void AF3MashUpCharacter::OnEndOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnEndOverlap - An object ended overlap"));
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnEndOverlap - An object ended overlap")));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+
+	_DoCapsuleCheck();
+}
+
+void AF3MashUpCharacter::CheckIfPlayerCrushed()
+{
+	_DoCapsuleCheck();
+}
+
+void AF3MashUpCharacter::_DoCapsuleCheck() {
+	FVector scaledStartAndEnd = CrushedCapsuleTraceFactor * GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * GetCapsuleComponent()->GetUpVector();
+	//FVector scaledStartAndEnd = CrushedCapsuleTraceFactor * GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * GetCapsuleComponent()->GetUpVector();
+
+	TArray<FHitResult> outHits;
+	//FVector traceStart = GetCapsuleComponent()->GetComponentLocation() + scaledStartAndEnd;
+	FVector traceStart = GetActorLocation() + scaledStartAndEnd;
+
+	//FVector traceEnd = GetCapsuleComponent()->GetComponentLocation() - scaledStartAndEnd;
+	FVector traceEnd = GetActorLocation() - scaledStartAndEnd;
+
+	FQuat rotation = FQuat().Identity;
+	//FQuat rotation = GetCapsuleComponent()->GetComponentQuat();
+	//ECollisionChannel collisionChannel = ECollisionChannel::ECC_Pawn;
+	ECollisionChannel collisionChannel = ECollisionChannel::ECC_WorldDynamic;
+	FCollisionShape collisionShape = GetCapsuleComponent()->GetCollisionShape(5.0f);
+	//FCollisionShape collisionShape = GetCapsuleComponent()->GetCollisionShape(10.0f);
+
+	/*
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_DoCapsuleCheck - scaledStartAndEnd = (%f, %f, %f)"), scaledStartAndEnd.X, scaledStartAndEnd.Y, scaledStartAndEnd.Z));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_DoCapsuleCheck - traceStart = (%f, %f, %f)"), traceStart.X, traceStart.Y, traceStart.Z));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_DoCapsuleCheck - traceEnd = (%f, %f, %f)"), traceEnd.X, traceEnd.Y, traceEnd.Z));
+	*/
+
+	bool isTouchingFloorBelow = false;
+	bool isTouchingPieceAbove = false;
+
+	if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape))
+	{
+		UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep got some hits: %d"), outHits.Num());
+
+		for (FHitResult hitResult : outHits)
+		{
+			hitResult.Actor->GetFullName().GetCharArray();
+			UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep Hit: %s"), *(hitResult.Actor->GetFullName()));
+
+			if (hitResult.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
+			{
+				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found"));
+				FVector bpLocation = hitResult.GetActor()->GetActorLocation();
+				if (bpLocation.Z >= GetActorLocation().Z)
+				{
+					UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found was above the fps player"));
+					isTouchingPieceAbove = true;
+				}
+			}
+			else if (hitResult.GetActor()->ActorHasTag("Floor"))
+			{
+				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found"));
+				FVector bpLocation = hitResult.GetActor()->GetActorLocation();
+				if (bpLocation.Z <= GetActorLocation().Z)
+				{
+					UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found was below the fps player"));
+					isTouchingFloorBelow = true;
+				}
+			}
+			else if (hitResult.GetActor()->Tags.Contains("Floor"))
+			{
+				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found through alternate method"));
+				FVector bpLocation = hitResult.GetActor()->GetActorLocation();
+				if (bpLocation.Z <= GetActorLocation().Z)
+				{
+					UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found was below the fps player"));
+					isTouchingFloorBelow = true;
+				}
+			}
+
+			for (FName tag : hitResult.GetActor()->Tags) {
+				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - tag found = %s"), *(tag.ToString()));
+			}
+
+			UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - tag found? = %d"), hitResult.GetActor()->ActorHasTag("Floor"));
+			
+		}
+
+		if (isTouchingPieceAbove && isTouchingFloorBelow)
+		{
+			ServerOnDamaged(100.0f);
+		}
+	}
 }
 
 

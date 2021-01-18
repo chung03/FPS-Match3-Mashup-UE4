@@ -98,6 +98,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
 	float LineTraceEndDistance = 1000.0f;
 
+	/** Turning Parameter for checking when the player is crushed*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
+	float CrushedCapsuleTraceFactor = 1.0f;
+
+	void CheckIfPlayerCrushed();
+
 protected:
 	
 	UFUNCTION(BlueprintCallable)
@@ -179,6 +185,14 @@ private:
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnBeginOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnEndOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void _DoCapsuleCheck();
 
 protected:
 	// APawn interface
