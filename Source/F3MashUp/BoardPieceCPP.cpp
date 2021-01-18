@@ -105,7 +105,6 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 
 	FHitResult OutSweepHitResult;
 
-	
 	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha), true, &OutSweepHitResult);
 	if (OutSweepHitResult.Actor.IsValid()) {
 		UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Move Sweep Hit: %s"), *(OutSweepHitResult.Actor->GetFullName()));
@@ -117,7 +116,8 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 		}
 	}
 
-	//SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
+	// Doing the same move so that nothing really gets blocked
+	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
 
 
 	if (TimeSinceMovementStarted >= TimeToDoMove) {
