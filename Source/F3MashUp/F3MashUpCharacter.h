@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "IPlayerInputAccepter.h"
 #include "F3MashUpCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config=Game)
-class AF3MashUpCharacter : public ACharacter
+class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter
 {
 	GENERATED_BODY()
 
@@ -103,6 +104,18 @@ public:
 	float CrushedCapsuleTraceFactor = 1.0f;
 
 	void CheckIfPlayerCrushed();
+
+	void HandleFire_Implementation(bool isPressed) override;
+	void HandleJump_Implementation(bool isPressed) override;
+	void HandleMoveRight_Implementation(float axisValue) override;
+	void HandleMoveForward_Implementation(float axisValue) override;
+	void HandleTurn_Implementation(float axisValue) override;
+	void HandleTurnRate_Implementation(float axisValue) override;
+	void HandleLookUp_Implementation(float axisValue) override;
+	void HandleLookUpRate_Implementation(float axisValue) override;
+	void HandleResetVR_Implementation() override;
+	void HandleRotateBoardPieceRight_Implementation(bool isPressed) override;
+	void HandleRotateBoardPieceLeft_Implementation(bool isPressed) override;
 
 protected:
 	

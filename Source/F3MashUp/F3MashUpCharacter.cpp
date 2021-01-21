@@ -353,6 +353,7 @@ void AF3MashUpCharacter::AllowFire()
 
 void AF3MashUpCharacter::StartFiring()
 {
+	OnFire();
 	GetWorldTimerManager().SetTimer(KeepFiringTimer, this, &AF3MashUpCharacter::OnFire, FireRate, true);
 }
 
@@ -494,4 +495,79 @@ bool AF3MashUpCharacter::EnableTouchscreenMovement(class UInputComponent* Player
 	}
 	
 	return false;
+}
+
+void AF3MashUpCharacter::HandleFire_Implementation(bool isPressed)
+{
+	if (isPressed)
+	{
+		StartFiring();
+	}
+	else
+	{
+		StopFiring();
+	}
+}
+
+void AF3MashUpCharacter::HandleJump_Implementation(bool isPressed)
+{
+	if (isPressed)
+	{
+		Jump();
+	}
+	else
+	{
+		StopJumping();
+	}
+}
+
+void AF3MashUpCharacter::HandleMoveRight_Implementation(float axisValue)
+{
+	MoveRight(axisValue);
+}
+
+void AF3MashUpCharacter::HandleMoveForward_Implementation(float axisValue)
+{
+	MoveForward(axisValue);
+}
+
+void AF3MashUpCharacter::HandleTurn_Implementation(float axisValue)
+{
+	AddControllerYawInput(axisValue);
+}
+
+void AF3MashUpCharacter::HandleTurnRate_Implementation(float axisValue)
+{
+	TurnAtRate(axisValue);
+}
+
+void AF3MashUpCharacter::HandleLookUp_Implementation(float axisValue)
+{
+	AddControllerPitchInput(axisValue);
+}
+
+void AF3MashUpCharacter::HandleLookUpRate_Implementation(float axisValue)
+{
+	LookUpAtRate(axisValue);
+}
+
+void AF3MashUpCharacter::HandleResetVR_Implementation()
+{
+	OnResetVR();
+}
+
+void AF3MashUpCharacter::HandleRotateBoardPieceRight_Implementation(bool isPressed)
+{
+	if (isPressed)
+	{
+		OnRotateBoardPiece(90);
+	}
+}
+
+void AF3MashUpCharacter::HandleRotateBoardPieceLeft_Implementation(bool isPressed)
+{
+	if (isPressed)
+	{
+		OnRotateBoardPiece(-90);
+	}
 }
