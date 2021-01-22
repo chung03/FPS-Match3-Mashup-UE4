@@ -123,8 +123,8 @@ void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 {
 	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnHit - An object was hit"));
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnHit - An object was hit")));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnHit - An object was hit")));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
 
 	_DoCapsuleCheck();
 }
@@ -133,8 +133,8 @@ void AF3MashUpCharacter::OnBeginOverlap(class UPrimitiveComponent* HitComp, clas
 {
 	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnBeginOverlap - An object started overlap"));
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnBeginOverlap - An object started overlap")));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnBeginOverlap - An object started overlap")));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
 
 	_DoCapsuleCheck();
 }
@@ -143,8 +143,8 @@ void AF3MashUpCharacter::OnEndOverlap(class UPrimitiveComponent* HitComp, class 
 {
 	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnEndOverlap - An object ended overlap"));
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnEndOverlap - An object ended overlap")));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnEndOverlap - An object ended overlap")));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
 
 	_DoCapsuleCheck();
 }
@@ -330,8 +330,8 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_OnFire - An object was detected")));
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OutHit.GetActor()->GetFullName());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_OnFire - An object was detected")));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OutHit.GetActor()->GetFullName());
 
 		if (OutHit.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
 		{
@@ -342,7 +342,7 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_OnFire - An object was not detected")));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::_OnFire - An object was not detected")));
 	}
 }
 
