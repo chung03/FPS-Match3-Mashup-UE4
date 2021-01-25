@@ -19,7 +19,15 @@ ABoardPieceCPP::ABoardPieceCPP()
 void ABoardPieceCPP::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Get all static mesh components
+	TArray<UStaticMeshComponent*> StaticComps;
+	GetComponents<UStaticMeshComponent>(StaticComps);
+
+	for (UStaticMeshComponent* staticMesh : StaticComps)
+	{
+		_staticMesh = staticMesh;
+	}
 }
 
 // Called every frame
@@ -103,22 +111,55 @@ bool ABoardPieceCPP::IsPieceMoving(){
 void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocation, BOARD_PIECE_STATE nextState, float TimeToDoMove) {
 	float alpha = FMath::Clamp((TimeToDoMove - TimeSinceMovementStarted) / TimeToDoMove, 0.0f, 1.0f);
 
-	FHitResult OutSweepHitResult;
-
-	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha), true, &OutSweepHitResult);
-	if (OutSweepHitResult.Actor.IsValid()) {
-		UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Move Sweep Hit: %s"), *(OutSweepHitResult.Actor->GetFullName()));
-		
-		if (OutSweepHitResult.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
-		{
-			AF3MashUpCharacter* fpsChar = Cast<AF3MashUpCharacter>(OutSweepHitResult.GetActor());
-			fpsChar->CheckIfPlayerCrushed();
-		}
-	}
-
 	// Doing the same move so that nothing really gets blocked
 	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
 
+	TArray<FHitResult> outHits;
+	FVector traceStart = GetActorLocation();
+
+	FVector traceEnd = GetActorLocation();
+
+	FQuat rotation = FQuat().Identity;
+	ECollisionChannel collisionChannel = ECollisionChannel::ECC_Pawn;
+	
+	FCollisionShape collisionShape = _staticMesh->GetCollisionShape();
+
+	//Make the bounding box smaller so that it doesn't detect everything
+	collisionShape.Box.HalfExtentX *= 0.98f;
+	collisionShape.Box.HalfExtentY *= 0.98f;
+	
+	//Make box trace shorter and make it only check bottom of the board piece
+	collisionShape.Box.HalfExtentZ = 5.0f;
+	traceStart.Z -= collisionShape.Box.HalfExtentZ + 1.0f;
+	traceEnd.Z -= collisionShape.Box.HalfExtentZ + 1.0f;
+
+	/*
+	const FName TraceTag("MyTraceTag");
+	GetWorld()->DebugDrawTraceTag = TraceTag;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.TraceTag = TraceTag;
+	*/
+
+	//if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape, CollisionParams))
+	if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape))
+	{
+		UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Box Trace got something"));
+
+		for (FHitResult hitResult : outHits)
+		{
+			if (!hitResult.Actor.IsValid())
+			{
+				continue;
+			}
+
+			UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Hit: %s"), *(hitResult.GetActor()->GetFullName()));
+			if (hitResult.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
+			{
+				AF3MashUpCharacter* fpsChar = Cast<AF3MashUpCharacter>(hitResult.GetActor());
+				fpsChar->CheckIfPlayerCrushed();
+			}
+		}
+	}
 
 	if (TimeSinceMovementStarted >= TimeToDoMove) {
 		currentState = nextState;

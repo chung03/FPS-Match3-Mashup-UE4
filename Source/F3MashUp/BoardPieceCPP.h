@@ -90,4 +90,6 @@ private:
 	void _OnPieceMoveFinish();
 
 	BOARD_PIECE_STATE currentState = BOARD_PIECE_STATE::IDLE;
+
+	UStaticMeshComponent* _staticMesh;
 };
