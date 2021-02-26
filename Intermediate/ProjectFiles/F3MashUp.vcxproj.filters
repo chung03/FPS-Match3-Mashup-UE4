@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\F3MashUp.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{3FD06735-C5D9-4FF8-A786-87FD155FDF96}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\F3MashUp.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\F3MashUpEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\LICENSE" />
+    <None Include="..\..\README.md" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{42D32DAB-84B6-4D43-B2A2-A21216E02F89}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\F3MashUp">
+      <UniqueIdentifier>{C520EBAC-3F28-4B35-B391-378DEFA65E4B}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\F3MashUp\BoardPieceCPP.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\BoardPieceCPP.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\BoardPieceHolderCPP.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\BoardPieceHolderCPP.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\F3MashUp\F3MashUp.Build.cs">
+      <Filter>Source\F3MashUp</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\F3MashUp\F3MashUp.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\F3MashUp.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\F3MashUpCharacter.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\F3MashUpCharacter.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\F3MashUpGameMode.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\F3MashUpGameMode.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\F3MashUpHUD.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\F3MashUpHUD.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\F3MashUpPlayerState.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\F3MashUpPlayerState.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\F3MashUpProjectile.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\F3MashUpProjectile.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\IPlayerInputAccepter.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\IPlayerInputAccepter.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
+    <Filter Include="Source\F3MashUp\TestingFunctions">
+      <UniqueIdentifier>{4216884D-6E69-4A64-B0DA-18DACD665395}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.cpp">
+      <Filter>Source\F3MashUp\TestingFunctions</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.h">
+      <Filter>Source\F3MashUp\TestingFunctions</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
