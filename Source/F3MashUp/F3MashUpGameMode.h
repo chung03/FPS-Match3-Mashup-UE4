@@ -3,16 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "F3MashUpGameMode.generated.h"
 
 UCLASS(minimalapi)
-class AF3MashUpGameMode : public AGameModeBase
+class AF3MashUpGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
 public:
 	AF3MashUpGameMode();
+
+	UFUNCTION(BlueprintCallable)
+	void PlayerKilled();
 };
 
 

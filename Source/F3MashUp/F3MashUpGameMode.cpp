@@ -5,6 +5,8 @@
 #include "F3MashUpCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Warning, All);
+
 AF3MashUpGameMode::AF3MashUpGameMode()
 	: Super()
 {
@@ -17,4 +19,10 @@ AF3MashUpGameMode::AF3MashUpGameMode()
 
 	// use our custom HUD class
 	HUDClass = AF3MashUpHUD::StaticClass();
+}
+
+
+void AF3MashUpGameMode::PlayerKilled()
+{
+	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed"));
 }

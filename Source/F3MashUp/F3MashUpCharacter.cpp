@@ -2,6 +2,7 @@
 
 #include "F3MashUpCharacter.h"
 #include "F3MashUpProjectile.h"
+#include "F3MashUpGameMode.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -339,6 +340,9 @@ void AF3MashUpCharacter::_OnDamaged(float damage)
 
 	if (Health <= 0.0f)
 	{
+		AGameModeBase* gameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode() : NULL;
+		AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
+		f3MashUpGameMode->PlayerKilled();
 		Destroy();
 	}
 }
