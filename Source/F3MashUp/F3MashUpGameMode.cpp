@@ -3,6 +3,7 @@
 #include "F3MashUpGameMode.h"
 #include "F3MashUpHUD.h"
 #include "F3MashUpCharacter.h"
+#include "F3MashUpGameState.h"
 #include "UObject/ConstructorHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Warning, All);
@@ -19,10 +20,31 @@ AF3MashUpGameMode::AF3MashUpGameMode()
 
 	// use our custom HUD class
 	HUDClass = AF3MashUpHUD::StaticClass();
+
+	PlayerScores = TMap<int, int>();
 }
 
 
-void AF3MashUpGameMode::PlayerKilled()
+void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 {
 	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed"));
+
+	if (KillerID != -1 && !PlayerScores.Contains(KillerID))
+	{
+		PlayerScores.Add(KillerID, 0);
+	}
+
+	if (!PlayerScores.Contains(VictimID))
+	{
+		PlayerScores.Add(VictimID, 0);
+	}
+
+	int previousKillerScore = PlayerScores[KillerID];
+	PlayerScores.Add(KillerID, previousKillerScore + 1);
+
+	int previousVictimScore = PlayerScores[VictimID];
+	PlayerScores.Add(VictimID, previousVictimScore - 1);
+
+	AF3MashUpGameState* currentGameState = GetWorld()->GetGameState<AF3MashUpGameState>();
+	currentGameState->PlayerScores = PlayerScores;
 }

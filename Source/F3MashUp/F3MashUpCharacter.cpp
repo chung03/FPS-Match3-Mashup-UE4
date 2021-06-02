@@ -342,7 +342,7 @@ void AF3MashUpCharacter::_OnDamaged(float damage)
 	{
 		AGameModeBase* gameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode() : NULL;
 		AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
-		f3MashUpGameMode->PlayerKilled();
+		f3MashUpGameMode->PlayerKilled(0, 1);
 		Destroy();
 	}
 }

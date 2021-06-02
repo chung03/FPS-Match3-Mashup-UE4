@@ -14,8 +14,18 @@ class AF3MashUpGameMode : public AGameMode
 public:
 	AF3MashUpGameMode();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MatchLengthMinutes = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int KillsToWin = 0;
+
 	UFUNCTION(BlueprintCallable)
-	void PlayerKilled();
+	void PlayerKilled(int KillerID, int VictimID);
+
+private:
+	UPROPERTY(EditAnywhere)
+	TMap<int, int> PlayerScores;
 };
 
 
