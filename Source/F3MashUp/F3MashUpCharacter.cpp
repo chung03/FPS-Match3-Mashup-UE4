@@ -203,7 +203,7 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 
 		if (isTouchingPieceAbove && isTouchingFloorBelow)
 		{
-			ServerOnDamaged(100.0f);
+			ServerOnDamaged(100.0f, -1);
 		}
 	}
 }
@@ -215,6 +215,7 @@ void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 
 	DOREPLIFETIME(AF3MashUpCharacter, Health);
 	DOREPLIFETIME(AF3MashUpCharacter, CanFire);
+	DOREPLIFETIME(AF3MashUpCharacter, OwningPlayerID);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -237,6 +238,16 @@ float AF3MashUpCharacter::GetMaxHealth()
 float AF3MashUpCharacter::GetHealth()
 {
 	return Health;
+}
+
+int AF3MashUpCharacter::GetOwningPlayerID()
+{
+	return OwningPlayerID;
+}
+
+void AF3MashUpCharacter::SetOwningPlayerID(int newOwningPlayerID)
+{
+	OwningPlayerID = newOwningPlayerID;
 }
 
 void AF3MashUpCharacter::OnFire()
@@ -307,7 +318,7 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 		{
 			AF3MashUpCharacter* other = Cast<AF3MashUpCharacter, AActor>(OutHit.GetActor());
 
-			other->ServerOnDamaged(1.0f);
+			other->ServerOnDamaged(1.0f, OwningPlayerID);
 		}
 	}
 }
@@ -329,12 +340,12 @@ void AF3MashUpCharacter::StopFiring()
 	GetWorldTimerManager().ClearTimer(KeepFiringTimer);
 }
 
-void AF3MashUpCharacter::ServerOnDamaged_Implementation(float damage)
+void AF3MashUpCharacter::ServerOnDamaged_Implementation(float damage, int damagingPlayerId)
 {
-	_OnDamaged(damage);
+	_OnDamaged(damage, damagingPlayerId);
 }
 
-void AF3MashUpCharacter::_OnDamaged(float damage)
+void AF3MashUpCharacter::_OnDamaged(float damage, int damagingPlayerId)
 {
 	Health -= damage;
 
@@ -342,7 +353,7 @@ void AF3MashUpCharacter::_OnDamaged(float damage)
 	{
 		AGameModeBase* gameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode() : NULL;
 		AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
-		f3MashUpGameMode->PlayerKilled(0, 1);
+		f3MashUpGameMode->PlayerKilled(damagingPlayerId, OwningPlayerID);
 		Destroy();
 	}
 }
@@ -533,4 +544,9 @@ void AF3MashUpCharacter::HandleRotateBoardPieceLeft_Implementation(bool isPresse
 	{
 		OnRotateBoardPiece(-90);
 	}
+}
+
+void AF3MashUpCharacter::HandleSetOwningPlayerID_Implementation(int newOwningPlayerID)
+{
+	SetOwningPlayerID(newOwningPlayerID);
 }

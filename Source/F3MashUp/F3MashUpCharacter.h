@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "IPlayerInputAccepter.h"
+#include "IPlayerPawnInterface.h"
 #include "F3MashUpCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config=Game)
-class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter
+class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, public IPlayerPawnInterface
 {
 	GENERATED_BODY()
 
@@ -51,6 +52,9 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter
 
 	UPROPERTY(Replicated)
 	bool CanFire;
+
+	UPROPERTY(Replicated)
+	float OwningPlayerID;
 
 	/** A timer handle used for providing the rate delay in-between shooting.*/
 	FTimerHandle CanFireTimer;
@@ -116,8 +120,14 @@ public:
 	void HandleResetVR_Implementation() override;
 	void HandleRotateBoardPieceRight_Implementation(bool isPressed) override;
 	void HandleRotateBoardPieceLeft_Implementation(bool isPressed) override;
+	void HandleSetOwningPlayerID_Implementation(int newOwningPlayerID) override;
 
 protected:
+	UFUNCTION(BlueprintCallable)
+	int GetOwningPlayerID();
+
+	UFUNCTION(BlueprintCallable)
+	void SetOwningPlayerID(int newOwningPlayerID);
 	
 	UFUNCTION(BlueprintCallable)
 	float GetMaxHealth();
@@ -190,9 +200,9 @@ private:
 	void _OnFire(FVector ForwardVector);
 
 	UFUNCTION(Server, Reliable)
-	void ServerOnDamaged(float damage);
+	void ServerOnDamaged(float damage, int damagingPlayerId = -1);
 
-	void _OnDamaged(float damage);
+	void _OnDamaged(float damage, int damagingPlayerId = -1);
 
 	void AllowFire();
 
