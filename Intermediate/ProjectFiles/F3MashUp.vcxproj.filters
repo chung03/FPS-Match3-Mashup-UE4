@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\F3MashUp.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{4218639E-E56D-4079-8E85-444DB192A0AC}</UniqueIdentifier>
+      <UniqueIdentifier>{9CB88DFF-0334-4245-A131-26628E764859}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\F3MashUp.Target.cs">
       <Filter>Source</Filter>
@@ -15,7 +15,7 @@
     <None Include="..\..\LICENSE" />
     <None Include="..\..\README.md" />
     <Filter Include="Config">
-      <UniqueIdentifier>{B39BA0BA-322A-4605-9F51-B7D4B3CD4A1D}</UniqueIdentifier>
+      <UniqueIdentifier>{1F628FCB-C0BA-416A-A6E6-97C49915BD4E}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -33,7 +33,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\F3MashUp">
-      <UniqueIdentifier>{8501BB83-88C6-42DC-ACBD-F38312C12D52}</UniqueIdentifier>
+      <UniqueIdentifier>{48A53F75-0DF6-403E-B09D-8C5F7F0AE32B}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\BoardPieceCPP.cpp">
       <Filter>Source\F3MashUp</Filter>
@@ -105,7 +105,7 @@
       <Filter>Source\F3MashUp</Filter>
     </ClInclude>
     <Filter Include="Source\F3MashUp\TestingFunctions">
-      <UniqueIdentifier>{D2E8A29B-A7E3-4BD7-AB03-4E57D2A31DC4}</UniqueIdentifier>
+      <UniqueIdentifier>{85AF3308-61D2-46E0-B4F1-68E61E78F45F}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.cpp">
       <Filter>Source\F3MashUp\TestingFunctions</Filter>

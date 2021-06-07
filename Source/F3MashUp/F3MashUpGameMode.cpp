@@ -29,18 +29,20 @@ void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 {
 	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed"));
 
-	if (KillerID != -1 && !PlayerScores.Contains(KillerID))
-	{
-		PlayerScores.Add(KillerID, 0);
+	if (KillerID != -1) {
+		if (!PlayerScores.Contains(KillerID))
+		{
+			PlayerScores.Add(KillerID, 0);
+		}
+
+		int previousKillerScore = PlayerScores[KillerID];
+		PlayerScores.Add(KillerID, previousKillerScore + 1);
 	}
 
 	if (!PlayerScores.Contains(VictimID))
 	{
 		PlayerScores.Add(VictimID, 0);
 	}
-
-	int previousKillerScore = PlayerScores[KillerID];
-	PlayerScores.Add(KillerID, previousKillerScore + 1);
 
 	int previousVictimScore = PlayerScores[VictimID];
 	PlayerScores.Add(VictimID, previousVictimScore - 1);

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "IPlayerInputAccepter.h"
-#include "IPlayerPawnInterface.h"
+#include "PlayerPawnInterface.h"
 #include "F3MashUpCharacter.generated.h"
 
 class UInputComponent;
