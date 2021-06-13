@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\F3MashUp.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{9CB88DFF-0334-4245-A131-26628E764859}</UniqueIdentifier>
+      <UniqueIdentifier>{C243B816-5589-40D0-A524-2545F0A5D09F}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\F3MashUp.Target.cs">
       <Filter>Source</Filter>
@@ -15,7 +15,7 @@
     <None Include="..\..\LICENSE" />
     <None Include="..\..\README.md" />
     <Filter Include="Config">
-      <UniqueIdentifier>{1F628FCB-C0BA-416A-A6E6-97C49915BD4E}</UniqueIdentifier>
+      <UniqueIdentifier>{D73107CE-4D06-431A-9FA8-D96F317C09D8}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -33,7 +33,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\F3MashUp">
-      <UniqueIdentifier>{48A53F75-0DF6-403E-B09D-8C5F7F0AE32B}</UniqueIdentifier>
+      <UniqueIdentifier>{88AF7B1D-3DFB-4849-8A02-5996901459D4}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\BoardPieceCPP.cpp">
       <Filter>Source\F3MashUp</Filter>
@@ -104,8 +104,14 @@
     <ClInclude Include="..\..\Source\F3MashUp\PlayerPawnInterface.h">
       <Filter>Source\F3MashUp</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\PlayerToScoreStruct.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\PlayerToScoreStruct.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
     <Filter Include="Source\F3MashUp\TestingFunctions">
-      <UniqueIdentifier>{85AF3308-61D2-46E0-B4F1-68E61E78F45F}</UniqueIdentifier>
+      <UniqueIdentifier>{E30D4F5C-971F-4B52-98A1-E8BF960B1864}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.cpp">
       <Filter>Source\F3MashUp\TestingFunctions</Filter>

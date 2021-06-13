@@ -52,6 +52,9 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, publi
 
 	UPROPERTY(Replicated)
 	bool CanFire;
+	
+	UPROPERTY(Replicated)
+	bool CanServerDoCapsuleCheck;
 
 	UPROPERTY(Replicated)
 	float OwningPlayerID;
@@ -61,6 +64,9 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, publi
 
 	/** A timer handle used to let players shoot as long as they hold down the fire button*/
 	FTimerHandle KeepFiringTimer;
+
+	/** A timer handle used to control how often the server is asked to check if the player got crushed*/
+	FTimerHandle ServerCapsuleCheckTimer;
 
 	FVector InitialSpawnLocation;
 	FRotator InitialSpawnRotation;
@@ -106,6 +112,9 @@ public:
 	/** Turning Parameter for checking when the player is crushed*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
 	float CrushedCapsuleTraceFactor = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	float ServerCapsuleCheckRate;
 
 	void CheckIfPlayerCrushed();
 
@@ -206,6 +215,7 @@ private:
 
 	void AllowFire();
 
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
@@ -213,6 +223,8 @@ private:
 	void ServerDoCapsuleCheck();
 
 	void _DoCapsuleCheck();
+
+	void AllowServerDoCapsuleCheck();
 
 protected:
 	// APawn interface

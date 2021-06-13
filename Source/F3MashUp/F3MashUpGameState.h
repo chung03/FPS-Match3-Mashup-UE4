@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "PlayerToScoreStruct.h"
 #include "F3MashUpGameState.generated.h"
 
 /**
@@ -16,5 +17,5 @@ class F3MASHUP_API AF3MashUpGameState : public AGameState
 	
 public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
-	TMap<int, int> PlayerScores;
+	TArray<FPlayerToScoreStruct> PlayerScores;
 };

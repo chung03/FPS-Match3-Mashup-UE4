@@ -27,7 +27,7 @@ AF3MashUpGameMode::AF3MashUpGameMode()
 
 void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 {
-	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed"));
+	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed. KillerID = %d, VictimID = %d"), KillerID, VictimID);
 
 	if (KillerID != -1) {
 		if (!PlayerScores.Contains(KillerID))
@@ -47,6 +47,12 @@ void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 	int previousVictimScore = PlayerScores[VictimID];
 	PlayerScores.Add(VictimID, previousVictimScore - 1);
 
+	// Copy the map to the game state player scores array
 	AF3MashUpGameState* currentGameState = GetWorld()->GetGameState<AF3MashUpGameState>();
-	currentGameState->PlayerScores = PlayerScores;
+	currentGameState->PlayerScores.Empty();
+
+	for(TPair<int,int> pair : PlayerScores) {
+		FPlayerToScoreStruct ptsStruct = FPlayerToScoreStruct(pair.Key, pair.Value);
+		currentGameState->PlayerScores.Add(ptsStruct);
+	}
 }

@@ -111,6 +111,7 @@ void AF3MashUpCharacter::BeginPlay()
 
 	Health = MaxHealth;
 	CanFire = true;
+	CanServerDoCapsuleCheck = true;
 	InitialSpawnLocation = GetActorLocation();
 	InitialSpawnRotation = GetActorRotation();
 
@@ -124,12 +125,17 @@ void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnHit - An object was hit")));
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
 
-	ServerDoCapsuleCheck();
+	CheckIfPlayerCrushed();
 }
 
 void AF3MashUpCharacter::CheckIfPlayerCrushed()
 {
-	ServerDoCapsuleCheck();
+	if (CanServerDoCapsuleCheck)
+	{
+		GetWorldTimerManager().SetTimer(ServerCapsuleCheckTimer, this, &AF3MashUpCharacter::AllowServerDoCapsuleCheck, ServerCapsuleCheckRate, false);
+		CanServerDoCapsuleCheck = false;
+		ServerDoCapsuleCheck();
+	}
 }
 
 void AF3MashUpCharacter::ServerDoCapsuleCheck_Implementation()
@@ -208,6 +214,10 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 	}
 }
 
+void AF3MashUpCharacter::AllowServerDoCapsuleCheck()
+{
+	CanServerDoCapsuleCheck = true;
+}
 
 void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
@@ -215,6 +225,7 @@ void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 
 	DOREPLIFETIME(AF3MashUpCharacter, Health);
 	DOREPLIFETIME(AF3MashUpCharacter, CanFire);
+	DOREPLIFETIME(AF3MashUpCharacter, CanServerDoCapsuleCheck);
 	DOREPLIFETIME(AF3MashUpCharacter, OwningPlayerID);
 }
 
