@@ -56,8 +56,6 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, publi
 	UPROPERTY(Replicated)
 	bool CanServerDoCapsuleCheck;
 
-	UPROPERTY(Replicated)
-	float OwningPlayerID;
 
 	/** A timer handle used for providing the rate delay in-between shooting.*/
 	FTimerHandle CanFireTimer;
@@ -78,6 +76,9 @@ protected:
 	virtual void BeginPlay();
 
 public:
+	UPROPERTY(VisibleAnywhere, Replicated)
+	float OwningPlayerID;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
