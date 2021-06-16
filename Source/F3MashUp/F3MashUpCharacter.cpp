@@ -172,6 +172,8 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 	{
 		UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep got some hits: %d"), outHits.Num());
 
+		int crushingBPSwapInitiatorID = -1;
+
 		for (FHitResult hitResult : outHits)
 		{
 			hitResult.Actor->GetFullName().GetCharArray();
@@ -186,6 +188,9 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 				{
 					UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found was above the fps player"));
 					isTouchingPieceAbove = true;
+
+					ABoardPieceCPP * crushingBP = Cast<ABoardPieceCPP, AActor>(hitResult.GetActor());
+					crushingBPSwapInitiatorID = crushingBP->GetSwapInitiatingPlayerId();
 				}
 			}
 			else if (hitResult.GetActor()->ActorHasTag("Floor"))
@@ -209,7 +214,7 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 
 		if (isTouchingPieceAbove && isTouchingFloorBelow)
 		{
-			ServerOnDamaged(100.0f, -1);
+			ServerOnDamaged(100.0f, crushingBPSwapInitiatorID);
 		}
 	}
 }

@@ -58,29 +58,29 @@ void ABoardPieceHolderCPP::ServerRandomSwap_Implementation()
 	int randomIndex = FMath::RandRange(0, ConnectedBoardPieceHolders.Num() - 1);
 
 	if (ConnectedBoardPieceHolders[randomIndex] != NULL) {
-		_DoSwap(ConnectedBoardPieceHolders[randomIndex]);
+		_DoSwap(ConnectedBoardPieceHolders[randomIndex], -1);
 	}
 }
 
-void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other)
+void ABoardPieceHolderCPP::DoSwap(ABoardPieceHolderCPP* Other, int swappingPlayerId)
 {
-	ServerDoSwap(Other);
+	ServerDoSwap(Other, swappingPlayerId);
 }
 
-void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Other)
+void ABoardPieceHolderCPP::ServerDoSwap_Implementation(ABoardPieceHolderCPP* Other, int swappingPlayerId)
 {
-	_DoSwap(Other);
+	_DoSwap(Other, swappingPlayerId);
 }
 
-void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other)
+void ABoardPieceHolderCPP::_DoSwap(ABoardPieceHolderCPP* Other, int swappingPlayerId)
 {
 	if (!Other || !Other->IsSafeToChangePiece() || !IsSafeToChangePiece() || !IsConnectedPiece(Other)) {
 		return;
 	}
 
 	// Start process of swapping pieces
-	Other->CurrentBoardPiece->ServerDoSwapMovement(GetActorLocation(), true);
-	CurrentBoardPiece->ServerDoSwapMovement(Other->GetActorLocation(), false);
+	Other->CurrentBoardPiece->ServerDoSwapMovement(GetActorLocation(), true, swappingPlayerId);
+	CurrentBoardPiece->ServerDoSwapMovement(Other->GetActorLocation(), false, swappingPlayerId);
 
 	// Swap ownership of pieces
 	ABoardPieceCPP* temp = CurrentBoardPiece;

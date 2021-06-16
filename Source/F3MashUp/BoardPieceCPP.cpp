@@ -12,7 +12,7 @@ ABoardPieceCPP::ABoardPieceCPP()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	SwapInitiatingPlayerId = -1;
 }
 
 // Called when the game starts or when spawned
@@ -81,12 +81,12 @@ void ABoardPieceCPP::_DoSpawnMovement()
 	SetActorLocation(RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight));
 }
 
-void ABoardPieceCPP::ServerDoSwapMovement_Implementation(FVector TargetLocation, bool isMovingUnder)
+void ABoardPieceCPP::ServerDoSwapMovement_Implementation(FVector TargetLocation, bool isMovingUnder, int swappingPlayerId)
 {
-	_DoSwapMovement(TargetLocation, isMovingUnder);
+	_DoSwapMovement(TargetLocation, isMovingUnder, swappingPlayerId);
 }
 
-void ABoardPieceCPP::_DoSwapMovement(FVector TargetLocation, bool isMovingUnder)
+void ABoardPieceCPP::_DoSwapMovement(FVector TargetLocation, bool isMovingUnder, int swappingPlayerId)
 {
 	if (currentState != BOARD_PIECE_STATE::IDLE) {
 		return;
@@ -102,6 +102,7 @@ void ABoardPieceCPP::_DoSwapMovement(FVector TargetLocation, bool isMovingUnder)
 	TimeSinceMovementStarted = 0.0f;
 	RootLocation = GetActorLocation();
 	SwapTargetLocation = TargetLocation;
+	SwapInitiatingPlayerId = swappingPlayerId;
 }
 
 bool ABoardPieceCPP::IsPieceMoving(){
@@ -173,10 +174,16 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 
 void ABoardPieceCPP::_OnPieceMoveFinish()
 {
+	SwapInitiatingPlayerId = -1;
 	OwningPieceHolder->ServerCheckForMatches();
 }
 
-void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other)
+void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other, int swappingPlayerId)
 {
-	OwningPieceHolder->DoSwap(Other->OwningPieceHolder);
+	OwningPieceHolder->DoSwap(Other->OwningPieceHolder, swappingPlayerId);
+}
+
+int ABoardPieceCPP::GetSwapInitiatingPlayerId()
+{
+	return SwapInitiatingPlayerId;
 }

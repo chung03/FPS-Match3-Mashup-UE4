@@ -66,7 +66,7 @@ public:
 	void ServerRandomSwap();
 
 	UFUNCTION(BlueprintCallable)
-	void DoSwap(ABoardPieceHolderCPP* Other);
+	void DoSwap(ABoardPieceHolderCPP* Other, int swappingPlayerId);
 
 	UFUNCTION(Server, Reliable)
 	void ServerSpawnNewBoardPiece();
@@ -90,11 +90,11 @@ private:
 
 
 	UFUNCTION(Server, Reliable)
-	void ServerDoSwap(ABoardPieceHolderCPP* Other);
+	void ServerDoSwap(ABoardPieceHolderCPP* Other, int swappingPlayerId);
 	
 	void _CheckForMatches();
 	void _CheckNumMatchingPiecesInDirection(TArray<ABoardPieceHolderCPP*> &MatchingPieces, int directionIndex1, int directionIndex2);
-	void _DoSwap(ABoardPieceHolderCPP* Other);
+	void _DoSwap(ABoardPieceHolderCPP* Other, int swappingPlayerId);
 	void _SpawnNewBoardPiece();
 	void _DestroyBoardPiece();
 };

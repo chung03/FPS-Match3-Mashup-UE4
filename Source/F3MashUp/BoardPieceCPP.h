@@ -69,14 +69,16 @@ public:
 	void _DoSpawnMovement();
 
 	UFUNCTION(Server, Reliable)
-	void ServerDoSwapMovement(FVector TargetLocation, bool isMovingUnder);
+	void ServerDoSwapMovement(FVector TargetLocation, bool isMovingUnder, int swappingPlayerId);
 
-	void _DoSwapMovement(FVector TargetLocation, bool isMovingUnder);
+	void _DoSwapMovement(FVector TargetLocation, bool isMovingUnder, int swappingPlayerId);
 
 	bool IsPieceMoving();
 
 	UFUNCTION(BlueprintCallable)
-	void AttemptSwap(ABoardPieceCPP* Other);
+	void AttemptSwap(ABoardPieceCPP* Other, int swappingPlayerId);
+
+	int GetSwapInitiatingPlayerId();
 
 private:
 	FVector RootLocation;
@@ -92,4 +94,6 @@ private:
 	BOARD_PIECE_STATE currentState = BOARD_PIECE_STATE::IDLE;
 
 	UStaticMeshComponent* _staticMesh;
+
+	int SwapInitiatingPlayerId;
 };
