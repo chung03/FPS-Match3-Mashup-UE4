@@ -23,9 +23,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayerKilled(int KillerID, int VictimID);
 
+	UFUNCTION(BlueprintCallable)
+	void ChangeScoreOfPlayer(int playerID, int scoreChange);
+
+
 private:
 	UPROPERTY(EditAnywhere)
 	TMap<int, int> PlayerScores;
+
+	void CopyScoresToGameState();
 };
 
 

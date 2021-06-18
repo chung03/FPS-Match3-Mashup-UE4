@@ -47,11 +47,31 @@ void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 	int previousVictimScore = PlayerScores[VictimID];
 	PlayerScores.Add(VictimID, previousVictimScore - 1);
 
+	CopyScoresToGameState();
+}
+
+void AF3MashUpGameMode::ChangeScoreOfPlayer(int playerID, int scoreChange)
+{
+	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::ChangeScoreOfPlayer - A player's score was changed. playerID = %d, scoreChange = %d"), playerID, scoreChange);
+
+	if (!PlayerScores.Contains(playerID))
+	{
+		PlayerScores.Add(playerID, 0);
+	}
+
+	int previousPlayerScore = PlayerScores[playerID];
+	PlayerScores.Add(playerID, previousPlayerScore + scoreChange);
+
+	CopyScoresToGameState();
+}
+
+void AF3MashUpGameMode::CopyScoresToGameState()
+{
 	// Copy the map to the game state player scores array
 	AF3MashUpGameState* currentGameState = GetWorld()->GetGameState<AF3MashUpGameState>();
 	currentGameState->PlayerScores.Empty();
 
-	for(TPair<int,int> pair : PlayerScores) {
+	for (TPair<int, int> pair : PlayerScores) {
 		FPlayerToScoreStruct ptsStruct = FPlayerToScoreStruct(pair.Key, pair.Value);
 		currentGameState->PlayerScores.Add(ptsStruct);
 	}
