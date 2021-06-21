@@ -15,7 +15,7 @@
 #include "BoardPieceCPP.h"
 #include "Net/UnrealNetwork.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
+DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Log, All);
 
 //////////////////////////////////////////////////////////////////////////
 // AF3MashUpCharacter
@@ -120,7 +120,7 @@ void AF3MashUpCharacter::BeginPlay()
 
 void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::OnHit - An object was hit"));
+	UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::OnHit - An object was hit"));
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("AF3MashUpCharacter::OnHit - An object was hit")));
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, OtherActor->GetFullName());
@@ -170,23 +170,23 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 	//if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape, CollisionParams))
 	if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape))
 	{
-		UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep got some hits: %d"), outHits.Num());
+		UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep got some hits: %d"), outHits.Num());
 
 		int crushingBPSwapInitiatorID = -1;
 
 		for (FHitResult hitResult : outHits)
 		{
 			hitResult.Actor->GetFullName().GetCharArray();
-			UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep Hit: %s"), *(hitResult.Actor->GetFullName()));
+			UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep Hit: %s"), *(hitResult.Actor->GetFullName()));
 
 			if (hitResult.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
 			{
-				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found"));
+				UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found"));
 				FVector bpLocation = hitResult.GetActor()->GetActorLocation();
-				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - BP Z = %f, Player Z = %f, Player Capsule Z = %f"), bpLocation.Z, GetActorLocation().Z, GetCapsuleComponent()->GetComponentLocation().Z);
+				UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - BP Z = %f, Player Z = %f, Player Capsule Z = %f"), bpLocation.Z, GetActorLocation().Z, GetCapsuleComponent()->GetComponentLocation().Z);
 				if (bpLocation.Z >= GetCapsuleComponent()->GetComponentLocation().Z)
 				{
-					UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found was above the fps player"));
+					UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Board Piece found was above the fps player"));
 					isTouchingPieceAbove = true;
 
 					ABoardPieceCPP * crushingBP = Cast<ABoardPieceCPP, AActor>(hitResult.GetActor());
@@ -195,20 +195,20 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 			}
 			else if (hitResult.GetActor()->ActorHasTag("Floor"))
 			{
-				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found"));
+				UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found"));
 				FVector bpLocation = hitResult.GetActor()->GetActorLocation();
 				if (bpLocation.Z <= GetCapsuleComponent()->GetComponentLocation().Z)
 				{
-					UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found was below the fps player"));
+					UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Floor found was below the fps player"));
 					isTouchingFloorBelow = true;
 				}
 			}
 
 			for (FName tag : hitResult.GetActor()->Tags) {
-				UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - tag found = %s"), *(tag.ToString()));
+				UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - tag found = %s"), *(tag.ToString()));
 			}
 
-			UE_LOG(LogFPChar, Warning, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - tag found? = %d"), hitResult.GetActor()->ActorHasTag("Floor"));
+			UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - tag found? = %d"), hitResult.GetActor()->ActorHasTag("Floor"));
 			
 		}
 

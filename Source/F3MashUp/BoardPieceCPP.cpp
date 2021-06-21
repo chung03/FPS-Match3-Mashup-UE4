@@ -5,7 +5,7 @@
 #include "BoardPieceHolderCPP.h"
 #include "F3MashUpCharacter.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogBoardPiece, Warning, All);
+DEFINE_LOG_CATEGORY_STATIC(LogBoardPiece, Log, All);
 
 // Sets default values
 ABoardPieceCPP::ABoardPieceCPP()
@@ -13,6 +13,7 @@ ABoardPieceCPP::ABoardPieceCPP()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SwapInitiatingPlayerId = -1;
+	BoardPieceCurrentHp = BoardPieceMaxHp;
 }
 
 // Called when the game starts or when spawned
@@ -144,7 +145,7 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 	//if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape, CollisionParams))
 	if (GetWorld()->SweepMultiByChannel(outHits, traceStart, traceEnd, rotation, collisionChannel, collisionShape))
 	{
-		UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Box Trace got something"));
+		UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_DoPieceMove - Box Trace got something"));
 
 		for (FHitResult hitResult : outHits)
 		{
@@ -153,7 +154,7 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 				continue;
 			}
 
-			UE_LOG(LogBoardPiece, Warning, TEXT("ABoardPieceCPP::_DoPieceMove - Hit: %s"), *(hitResult.GetActor()->GetFullName()));
+			UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_DoPieceMove - Hit: %s"), *(hitResult.GetActor()->GetFullName()));
 			if (hitResult.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
 			{
 				AF3MashUpCharacter* fpsChar = Cast<AF3MashUpCharacter>(hitResult.GetActor());
@@ -186,4 +187,19 @@ void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other, int swappingPlayerId)
 int ABoardPieceCPP::GetSwapInitiatingPlayerId()
 {
 	return SwapInitiatingPlayerId;
+}
+
+void ABoardPieceCPP::ServerDamagePiece_Implementation(int damagingPlayerId, float damage)
+{
+	_DamagePiece(damagingPlayerId, damage);
+}
+
+void ABoardPieceCPP::_DamagePiece(int damagingPlayerId, float damage)
+{
+	BoardPieceCurrentHp -= damage;
+
+	if (BoardPieceCurrentHp <= 0)
+	{
+		OwningPieceHolder->ServerReplaceCurrentBoardPiece();
+	}
 }

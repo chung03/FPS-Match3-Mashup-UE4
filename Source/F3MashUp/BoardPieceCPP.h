@@ -60,6 +60,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeToFinishSwapOverStepMovement = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoardPieceMaxHp = 0;
 
 	bool IsSameType(ABoardPieceCPP* Other);
 
@@ -80,6 +82,11 @@ public:
 
 	int GetSwapInitiatingPlayerId();
 
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerDamagePiece(int damagingPlayerId, float damage);
+
+	void _DamagePiece(int damagingPlayerId, float damage);
+
 private:
 	FVector RootLocation;
 
@@ -96,4 +103,6 @@ private:
 	UStaticMeshComponent* _staticMesh;
 
 	int SwapInitiatingPlayerId;
+
+	float BoardPieceCurrentHp;
 };
