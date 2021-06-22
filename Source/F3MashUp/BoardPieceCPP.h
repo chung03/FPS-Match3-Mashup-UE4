@@ -104,5 +104,9 @@ private:
 
 	int SwapInitiatingPlayerId;
 
+	UPROPERTY(Replicated)
 	float BoardPieceCurrentHp;
+
+	UPROPERTY(Replicated)
+	bool isDying;
 };

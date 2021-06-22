@@ -330,11 +330,18 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
 	{
-		if (OutHit.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
+		if (OutHit.GetActor() != this && OutHit.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
 		{
 			AF3MashUpCharacter* other = Cast<AF3MashUpCharacter, AActor>(OutHit.GetActor());
 
 			other->ServerOnDamaged(1.0f, OwningPlayerID);
+		}
+
+		if (OutHit.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
+		{
+			ABoardPieceCPP* other = Cast<ABoardPieceCPP, AActor>(OutHit.GetActor());
+
+			other->ServerDamagePiece(OwningPlayerID, 1.0f);
 		}
 	}
 }

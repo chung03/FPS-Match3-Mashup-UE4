@@ -4,6 +4,7 @@
 #include "BoardPieceCPP.h"
 #include "BoardPieceHolderCPP.h"
 #include "F3MashUpCharacter.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBoardPiece, Log, All);
 
@@ -13,13 +14,15 @@ ABoardPieceCPP::ABoardPieceCPP()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SwapInitiatingPlayerId = -1;
-	BoardPieceCurrentHp = BoardPieceMaxHp;
 }
 
 // Called when the game starts or when spawned
 void ABoardPieceCPP::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BoardPieceCurrentHp = BoardPieceMaxHp;
+	isDying = false;
 
 	// Get all static mesh components
 	TArray<UStaticMeshComponent*> StaticComps;
@@ -198,8 +201,17 @@ void ABoardPieceCPP::_DamagePiece(int damagingPlayerId, float damage)
 {
 	BoardPieceCurrentHp -= damage;
 
-	if (BoardPieceCurrentHp <= 0)
+	if (BoardPieceCurrentHp <= 0 && !isDying)
 	{
+		isDying = true;
 		OwningPieceHolder->ServerReplaceCurrentBoardPiece();
 	}
+}
+
+void ABoardPieceCPP::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABoardPieceCPP, BoardPieceCurrentHp);
+	DOREPLIFETIME(ABoardPieceCPP, isDying);
 }
