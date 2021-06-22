@@ -330,16 +330,18 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
 	{
-		if (OutHit.GetActor() != this && OutHit.GetActor()->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
+		AActor* hitActor = OutHit.GetActor();
+
+		if (hitActor && hitActor != this && hitActor->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
 		{
-			AF3MashUpCharacter* other = Cast<AF3MashUpCharacter, AActor>(OutHit.GetActor());
+			AF3MashUpCharacter* other = Cast<AF3MashUpCharacter, AActor>(hitActor);
 
 			other->ServerOnDamaged(1.0f, OwningPlayerID);
 		}
 
-		if (OutHit.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
+		if (hitActor && hitActor->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
 		{
-			ABoardPieceCPP* other = Cast<ABoardPieceCPP, AActor>(OutHit.GetActor());
+			ABoardPieceCPP* other = Cast<ABoardPieceCPP, AActor>(hitActor);
 
 			other->ServerDamagePiece(OwningPlayerID, 1.0f);
 		}
@@ -375,8 +377,14 @@ void AF3MashUpCharacter::_OnDamaged(float damage, int damagingPlayerId)
 	if (Health <= 0.0f)
 	{
 		AGameModeBase* gameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode() : NULL;
-		AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
-		f3MashUpGameMode->PlayerKilled(damagingPlayerId, OwningPlayerID);
+		if (gameMode) 
+		{
+			AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
+			if (f3MashUpGameMode)
+			{
+				f3MashUpGameMode->PlayerKilled(damagingPlayerId, OwningPlayerID);
+			}
+		}
 		Destroy();
 	}
 }
