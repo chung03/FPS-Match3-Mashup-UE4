@@ -6,7 +6,7 @@
 #include "F3MashUpGameState.h"
 #include "UObject/ConstructorHelpers.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Warning, All);
+DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Log, All);
 
 AF3MashUpGameMode::AF3MashUpGameMode()
 	: Super()
@@ -27,7 +27,7 @@ AF3MashUpGameMode::AF3MashUpGameMode()
 
 void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 {
-	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed. KillerID = %d, VictimID = %d"), KillerID, VictimID);
+	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::PlayerKilled - A player was killed. KillerID = %d, VictimID = %d"), KillerID, VictimID);
 
 	if (KillerID != -1) {
 		if (!PlayerScores.Contains(KillerID))
@@ -52,7 +52,7 @@ void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 
 void AF3MashUpGameMode::ChangeScoreOfPlayer(int playerID, int scoreChange)
 {
-	UE_LOG(LogFpsMashUpGameMode, Warning, TEXT("AF3MashUpGameMode::ChangeScoreOfPlayer - A player's score was changed. playerID = %d, scoreChange = %d"), playerID, scoreChange);
+	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::ChangeScoreOfPlayer - A player's score was changed. playerID = %d, scoreChange = %d"), playerID, scoreChange);
 
 	if (!PlayerScores.Contains(playerID))
 	{
