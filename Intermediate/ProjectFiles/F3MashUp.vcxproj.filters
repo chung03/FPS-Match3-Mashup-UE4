@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\F3MashUp.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{C243B816-5589-40D0-A524-2545F0A5D09F}</UniqueIdentifier>
+      <UniqueIdentifier>{388F10F4-A4B6-4583-9B0A-8F1F46A4A2C1}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\F3MashUp.Target.cs">
       <Filter>Source</Filter>
@@ -15,7 +15,7 @@
     <None Include="..\..\LICENSE" />
     <None Include="..\..\README.md" />
     <Filter Include="Config">
-      <UniqueIdentifier>{D73107CE-4D06-431A-9FA8-D96F317C09D8}</UniqueIdentifier>
+      <UniqueIdentifier>{06F0DE54-6536-478B-9798-76690503337E}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -33,7 +33,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\F3MashUp">
-      <UniqueIdentifier>{88AF7B1D-3DFB-4849-8A02-5996901459D4}</UniqueIdentifier>
+      <UniqueIdentifier>{15B75D00-7C02-4951-9FD4-2A71B9A2865A}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\BoardPieceCPP.cpp">
       <Filter>Source\F3MashUp</Filter>
@@ -110,8 +110,14 @@
     <ClInclude Include="..\..\Source\F3MashUp\PlayerToScoreStruct.h">
       <Filter>Source\F3MashUp</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\ScorePickUpCPP.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\ScorePickUpCPP.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
     <Filter Include="Source\F3MashUp\TestingFunctions">
-      <UniqueIdentifier>{E30D4F5C-971F-4B52-98A1-E8BF960B1864}</UniqueIdentifier>
+      <UniqueIdentifier>{5CC95156-A66C-40B8-95D5-D9122F0AB974}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.cpp">
       <Filter>Source\F3MashUp\TestingFunctions</Filter>
