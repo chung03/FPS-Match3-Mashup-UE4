@@ -15,13 +15,15 @@ AScorePickUpCPP::AScorePickUpCPP()
 void AScorePickUpCPP::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AScorePickUpCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+float AScorePickUpCPP::GetBoardPieceCrushCheckHeight_Implementation()
+{
+	return GetActorLocation().Z;
+}

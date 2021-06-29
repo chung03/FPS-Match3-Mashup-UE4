@@ -98,6 +98,14 @@ private:
 
 	void _OnPieceMoveFinish();
 
+	UFUNCTION()
+	void _HandleOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
 	BOARD_PIECE_STATE currentState = BOARD_PIECE_STATE::IDLE;
 
 	UStaticMeshComponent* _staticMesh;

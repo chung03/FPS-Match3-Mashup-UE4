@@ -4,6 +4,7 @@
 #include "BoardPieceCPP.h"
 #include "BoardPieceHolderCPP.h"
 #include "F3MashUpCharacter.h"
+#include "ScorePickUpCPP.h"
 #include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBoardPiece, Log, All);
@@ -32,6 +33,8 @@ void ABoardPieceCPP::BeginPlay()
 	{
 		_staticMesh = staticMesh;
 	}
+
+	_staticMesh->OnComponentBeginOverlap.AddDynamic(this, &ABoardPieceCPP::_HandleOverlap);
 }
 
 // Called every frame
@@ -82,7 +85,7 @@ void ABoardPieceCPP::_DoSpawnMovement()
 	currentState = BOARD_PIECE_STATE::SPAWNING;
 	TimeSinceMovementStarted = 0.0f;
 	RootLocation = GetActorLocation();
-	SetActorLocation(RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight));
+	SetActorLocation(RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), true);
 }
 
 void ABoardPieceCPP::ServerDoSwapMovement_Implementation(FVector TargetLocation, bool isMovingUnder, int swappingPlayerId)
@@ -117,7 +120,7 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 	float alpha = FMath::Clamp((TimeToDoMove - TimeSinceMovementStarted) / TimeToDoMove, 0.0f, 1.0f);
 
 	// Doing the same move so that nothing really gets blocked
-	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha));
+	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha), true);
 
 	TArray<FHitResult> outHits;
 	FVector traceStart = GetActorLocation();
@@ -214,4 +217,30 @@ void ABoardPieceCPP::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& Out
 
 	DOREPLIFETIME(ABoardPieceCPP, BoardPieceCurrentHp);
 	DOREPLIFETIME(ABoardPieceCPP, isDying);
+}
+
+void ABoardPieceCPP::_HandleOverlap(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_HandleOverlap - Overlap was triggered"));
+	UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_HandleOverlap - Other Actor: %s"), *(OtherActor->GetFullName()));
+
+	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf(AScorePickUpCPP::StaticClass()))
+	{
+		AScorePickUpCPP* scorePickUp = Cast<AScorePickUpCPP>(OtherActor);
+
+
+		UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_HandleOverlap - GetActorLocation().Z: %f"), GetActorLocation().Z);
+		UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_HandleOverlap - scorePickUp->GetBoardPieceCrushCheckHeight(): %f"), scorePickUp->GetBoardPieceCrushCheckHeight());
+
+		if (GetActorLocation().Z >= scorePickUp->GetBoardPieceCrushCheckHeight())
+		{
+			scorePickUp->Destroy();
+		}
+
+	}
 }
