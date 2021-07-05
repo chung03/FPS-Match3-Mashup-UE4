@@ -279,7 +279,11 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 
 	GetWorldTimerManager().SetTimer(CanFireTimer, this, &AF3MashUpCharacter::AllowFire, FireRate, false);
 
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
+	// You can't shoot yourself, ignore yourself
+	FCollisionQueryParams fireTraceParams;
+	fireTraceParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn, fireTraceParams))
 	{
 		AActor* hitActor = OutHit.GetActor();
 
