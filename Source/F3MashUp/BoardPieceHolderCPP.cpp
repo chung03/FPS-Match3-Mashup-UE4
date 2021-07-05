@@ -7,6 +7,8 @@
 #include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogBoardPieceHolder, Log, All);
+
 // Sets default values
 ABoardPieceHolderCPP::ABoardPieceHolderCPP()
 {
@@ -168,6 +170,11 @@ void ABoardPieceHolderCPP::_SpawnNewBoardPiece()
 	TSubclassOf<class ABoardPieceCPP> newBoardPieceType = PossibleBoardPieces[randomIndex];
 
 	FTransform transform = GetActorTransform();
+
+	FActorSpawnParameters spawnParams;
+	//spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	UE_LOG(LogBoardPieceHolder, Log, TEXT("ABoardPieceHolderCPP::_SpawnNewBoardPiece - New Piece Spawn Location = %s"), *(transform.GetLocation().ToString()));
 
 	CurrentBoardPiece = GetWorld()->SpawnActor<ABoardPieceCPP>(newBoardPieceType.Get(), transform);
 	CurrentBoardPiece->OwningPieceHolder = this;

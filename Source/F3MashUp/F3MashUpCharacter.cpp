@@ -81,12 +81,16 @@ void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 void AF3MashUpCharacter::CheckIfPlayerCrushed()
 {
+	/*
 	if (CanServerDoCapsuleCheck)
 	{
 		GetWorldTimerManager().SetTimer(ServerCapsuleCheckTimer, this, &AF3MashUpCharacter::AllowServerDoCapsuleCheck, ServerCapsuleCheckRate, false);
 		CanServerDoCapsuleCheck = false;
 		ServerDoCapsuleCheck();
 	}
+	*/
+
+	ServerDoCapsuleCheck();
 }
 
 void AF3MashUpCharacter::ServerDoCapsuleCheck_Implementation()
