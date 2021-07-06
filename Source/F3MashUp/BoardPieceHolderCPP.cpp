@@ -174,7 +174,7 @@ void ABoardPieceHolderCPP::_SpawnNewBoardPiece()
 	FActorSpawnParameters spawnParams;
 	//spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	UE_LOG(LogBoardPieceHolder, Log, TEXT("ABoardPieceHolderCPP::_SpawnNewBoardPiece - New Piece Spawn Location = %s"), *(transform.GetLocation().ToString()));
+	//UE_LOG(LogBoardPieceHolder, Log, TEXT("ABoardPieceHolderCPP::_SpawnNewBoardPiece - New Piece Spawn Location = %s"), *(transform.GetLocation().ToString()));
 
 	CurrentBoardPiece = GetWorld()->SpawnActor<ABoardPieceCPP>(newBoardPieceType.Get(), transform);
 	CurrentBoardPiece->OwningPieceHolder = this;

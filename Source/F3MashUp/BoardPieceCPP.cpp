@@ -36,7 +36,7 @@ void ABoardPieceCPP::BeginPlay()
 
 	//_staticMesh->OnComponentBeginOverlap.AddDynamic(this, &ABoardPieceCPP::_HandleOverlap);
 
-	UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::BeginPlay - Location = %s"), *(GetActorLocation().ToString()));
+	//UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::BeginPlay - Location = %s"), *(GetActorLocation().ToString()));
 }
 
 // Called every frame
@@ -89,7 +89,7 @@ void ABoardPieceCPP::_DoSpawnMovement()
 	RootLocation = GetActorLocation();
 	SetActorLocation(RootLocation + FVector(0.0f, 0.0f, BoardPieceSpawnHeight), false, nullptr, ETeleportType::TeleportPhysics);
 
-	UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_DoSpawnMovement - RootLocation = %s, GetActorLocation() = %s"), *(RootLocation.ToString()), *(GetActorLocation().ToString()));
+	//UE_LOG(LogBoardPiece, Log, TEXT("ABoardPieceCPP::_DoSpawnMovement - RootLocation = %s, GetActorLocation() = %s"), *(RootLocation.ToString()), *(GetActorLocation().ToString()));
 }
 
 void ABoardPieceCPP::ServerDoSwapMovement_Implementation(FVector TargetLocation, bool isMovingUnder, int swappingPlayerId)
