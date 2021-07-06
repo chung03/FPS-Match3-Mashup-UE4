@@ -124,7 +124,7 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 	float alpha = FMath::Clamp((TimeToDoMove - TimeSinceMovementStarted) / TimeToDoMove, 0.0f, 1.0f);
 
 	// Doing the same move so that nothing really gets blocked
-	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha), true);
+	SetActorLocation(FMath::Lerp(TargetLocation, StartingLocation, alpha), false);
 
 	TArray<FHitResult> outHits;
 	FVector traceStart = GetActorLocation();
