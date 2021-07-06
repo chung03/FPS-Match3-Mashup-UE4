@@ -62,7 +62,6 @@ void AF3MashUpCharacter::BeginPlay()
 
 	Health = MaxHealth;
 	CanFire = true;
-	CanServerDoCapsuleCheck = true;
 	InitialSpawnLocation = GetActorLocation();
 	InitialSpawnRotation = GetActorRotation();
 
@@ -81,15 +80,6 @@ void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 void AF3MashUpCharacter::CheckIfPlayerCrushed()
 {
-	/*
-	if (CanServerDoCapsuleCheck)
-	{
-		GetWorldTimerManager().SetTimer(ServerCapsuleCheckTimer, this, &AF3MashUpCharacter::AllowServerDoCapsuleCheck, ServerCapsuleCheckRate, false);
-		CanServerDoCapsuleCheck = false;
-		ServerDoCapsuleCheck();
-	}
-	*/
-
 	ServerDoCapsuleCheck();
 }
 
@@ -174,10 +164,6 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 	}
 }
 
-void AF3MashUpCharacter::AllowServerDoCapsuleCheck()
-{
-	CanServerDoCapsuleCheck = true;
-}
 
 void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
@@ -185,7 +171,6 @@ void AF3MashUpCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 
 	DOREPLIFETIME(AF3MashUpCharacter, Health);
 	DOREPLIFETIME(AF3MashUpCharacter, CanFire);
-	DOREPLIFETIME(AF3MashUpCharacter, CanServerDoCapsuleCheck);
 	DOREPLIFETIME(AF3MashUpCharacter, OwningPlayerID);
 }
 
@@ -377,44 +362,6 @@ void AF3MashUpCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVe
 	}
 	TouchItem.bIsPressed = false;
 }
-
-//Commenting this section out to be consistent with FPS BP template.
-//This allows the user to turn without using the right virtual joystick
-
-//void AF3MashUpCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-//	{
-//		if (TouchItem.bIsPressed)
-//		{
-//			if (GetWorld() != nullptr)
-//			{
-//				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-//				if (ViewportClient != nullptr)
-//				{
-//					FVector MoveDelta = Location - TouchItem.Location;
-//					FVector2D ScreenSize;
-//					ViewportClient->GetViewportSize(ScreenSize);
-//					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-//					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.X * BaseTurnRate;
-//						AddControllerYawInput(Value);
-//					}
-//					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.Y * BaseTurnRate;
-//						AddControllerPitchInput(Value);
-//					}
-//					TouchItem.Location = Location;
-//				}
-//				TouchItem.Location = Location;
-//			}
-//		}
-//	}
-//}
 
 void AF3MashUpCharacter::MoveForward(float Value)
 {

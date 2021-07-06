@@ -32,9 +32,6 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, publi
 
 	UPROPERTY(Replicated)
 	bool CanFire;
-	
-	UPROPERTY(Replicated)
-	bool CanServerDoCapsuleCheck;
 
 
 	/** A timer handle used for providing the rate delay in-between shooting.*/
@@ -42,9 +39,6 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, publi
 
 	/** A timer handle used to let players shoot as long as they hold down the fire button*/
 	FTimerHandle KeepFiringTimer;
-
-	/** A timer handle used to control how often the server is asked to check if the player got crushed*/
-	FTimerHandle ServerCapsuleCheckTimer;
 
 	FVector InitialSpawnLocation;
 	FRotator InitialSpawnRotation;
