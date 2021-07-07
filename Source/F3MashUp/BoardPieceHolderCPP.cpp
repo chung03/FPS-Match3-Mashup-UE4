@@ -148,7 +148,7 @@ void ABoardPieceHolderCPP::_CheckForMatches()
 			AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
 			if (f3MashUpGameMode)
 			{
-				f3MashUpGameMode->ChangeScoreOfPlayer(swapInitiatingID, totalNumMatchingPieces * PointsPerBoardPieceMatched);
+				f3MashUpGameMode->ChangeScoreOfPlayer(swapInitiatingID, (totalNumMatchingPieces + 1) * PointsPerBoardPieceMatched);
 			}
 		}
 
