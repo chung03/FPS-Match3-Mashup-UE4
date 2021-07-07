@@ -6,6 +6,7 @@
 #include "Containers/Array.h"
 #include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
+#include "F3MashUpGameMode.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBoardPieceHolder, Log, All);
 
@@ -121,6 +122,8 @@ void ABoardPieceHolderCPP::_CheckForMatches()
 
 	bool isMatch = false;
 
+	int totalNumMatchingPieces = northSouthMatchingPieces.Num() + eastWestMatchingPieces.Num();
+
 	if (northSouthMatchingPieces.Num() >= 2) {
 		for(ABoardPieceHolderCPP* other : northSouthMatchingPieces) {
 			other->ServerReplaceCurrentBoardPiece();
@@ -138,6 +141,17 @@ void ABoardPieceHolderCPP::_CheckForMatches()
 	}
 
 	if (isMatch) {
+		int swapInitiatingID = CurrentBoardPiece->GetSwapInitiatingPlayerId();
+		AGameModeBase* gameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode() : NULL;
+		if (gameMode)
+		{
+			AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
+			if (f3MashUpGameMode)
+			{
+				f3MashUpGameMode->ChangeScoreOfPlayer(swapInitiatingID, totalNumMatchingPieces * PointsPerBoardPieceMatched);
+			}
+		}
+
 		ServerReplaceCurrentBoardPiece();
 	}
 }

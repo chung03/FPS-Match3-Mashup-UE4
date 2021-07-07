@@ -62,6 +62,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RandomChangeFrequency;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PointsPerBoardPieceMatched;
+
 	UFUNCTION(Server, Reliable)
 	void ServerRandomSwap();
 

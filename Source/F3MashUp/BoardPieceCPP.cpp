@@ -192,8 +192,8 @@ void ABoardPieceCPP::_DoPieceMove(FVector TargetLocation, FVector StartingLocati
 
 void ABoardPieceCPP::_OnPieceMoveFinish()
 {
-	SwapInitiatingPlayerId = -1;
 	OwningPieceHolder->ServerCheckForMatches();
+	SwapInitiatingPlayerId = -1;
 }
 
 void ABoardPieceCPP::AttemptSwap(ABoardPieceCPP* Other, int swappingPlayerId)
