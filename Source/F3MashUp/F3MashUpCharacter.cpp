@@ -261,8 +261,8 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 
 	CanFire = false;
 
-	//FVector Start = GetActorLocation() + (ForwardVector * LineTraceStartDistance);
-	FVector Start = FirstPersonCameraComponent->GetComponentLocation() + (ForwardVector * LineTraceStartDistance);
+	//FVector Start = FirstPersonCameraComponent->GetComponentLocation() + (ForwardVector * LineTraceStartDistance);
+	FVector Start = GetActorLocation() + (ForwardVector * LineTraceStartDistance);
 	FVector End = ((ForwardVector * LineTraceEndDistance) + Start);
 
 	FHitResult OutHit;
