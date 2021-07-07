@@ -80,6 +80,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AttemptSwap(ABoardPieceCPP* Other, int swappingPlayerId);
 
+	UFUNCTION(BlueprintCallable)
 	int GetSwapInitiatingPlayerId();
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
