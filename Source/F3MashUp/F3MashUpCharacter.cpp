@@ -234,7 +234,11 @@ void AF3MashUpCharacter::_DoRotateBoardPiece(float degrees, FVector ForwardVecto
 
 	FHitResult OutHit;
 
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn))
+	// You can't shoot yourself, ignore yourself
+	FCollisionQueryParams rotateTraceParams;
+	rotateTraceParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Pawn, rotateTraceParams))
 	{
 		if (OutHit.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
 		{

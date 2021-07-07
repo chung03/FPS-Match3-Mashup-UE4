@@ -88,9 +88,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
 	float CrushedCapsuleTraceFactor = 1.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	float ServerCapsuleCheckRate;
-
 	void CheckIfPlayerCrushed();
 
 	void HandleFire_Implementation(bool isPressed) override;
