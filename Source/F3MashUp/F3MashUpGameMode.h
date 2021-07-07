@@ -15,7 +15,7 @@ public:
 	AF3MashUpGameMode();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MatchLengthMinutes = 0;
+	float MatchPointsToWin = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int KillsToWin = 0;
@@ -25,6 +25,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeScoreOfPlayer(int playerID, int scoreChange);
+
+	bool ShouldMatchEnd();
+
+protected:
+	virtual void HandleMatchHasEnded() override;
 
 
 private:

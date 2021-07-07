@@ -4,6 +4,7 @@
 #include "F3MashUpHUD.h"
 #include "F3MashUpCharacter.h"
 #include "F3MashUpGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Log, All);
@@ -47,6 +48,10 @@ void AF3MashUpGameMode::PlayerKilled(int KillerID, int VictimID)
 	int previousVictimScore = PlayerScores[VictimID];
 	PlayerScores.Add(VictimID, previousVictimScore - 1);
 
+	if (ShouldMatchEnd()) {
+		EndMatch();
+	}
+
 	CopyScoresToGameState();
 }
 
@@ -54,15 +59,22 @@ void AF3MashUpGameMode::ChangeScoreOfPlayer(int playerID, int scoreChange)
 {
 	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::ChangeScoreOfPlayer - A player's score was changed. playerID = %d, scoreChange = %d"), playerID, scoreChange);
 
-	if (!PlayerScores.Contains(playerID))
-	{
-		PlayerScores.Add(playerID, 0);
+	if (playerID != -1) {
+		if (!PlayerScores.Contains(playerID))
+		{
+			PlayerScores.Add(playerID, 0);
+		}
+
+
+		int previousPlayerScore = PlayerScores[playerID];
+		PlayerScores.Add(playerID, previousPlayerScore + scoreChange);
+
+		if (ShouldMatchEnd()) {
+			EndMatch();
+		}
+
+		CopyScoresToGameState();
 	}
-
-	int previousPlayerScore = PlayerScores[playerID];
-	PlayerScores.Add(playerID, previousPlayerScore + scoreChange);
-
-	CopyScoresToGameState();
 }
 
 void AF3MashUpGameMode::CopyScoresToGameState()
@@ -75,4 +87,23 @@ void AF3MashUpGameMode::CopyScoresToGameState()
 		FPlayerToScoreStruct ptsStruct = FPlayerToScoreStruct(pair.Key, pair.Value);
 		currentGameState->PlayerScores.Add(ptsStruct);
 	}
+}
+
+bool AF3MashUpGameMode::ShouldMatchEnd()
+{
+	for (TPair<int, int> pair : PlayerScores) {
+		if (pair.Value >= MatchPointsToWin)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void AF3MashUpGameMode::HandleMatchHasEnded()
+{
+	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::HandleMatchHasEnded - The match has ended"));
+
+	UGameplayStatics::OpenLevel(GetWorld(), "TitleScreen", true);
 }
