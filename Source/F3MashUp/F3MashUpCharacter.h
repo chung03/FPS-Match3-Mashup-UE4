@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "IPlayerInputAccepter.h"
 #include "PlayerPawnInterface.h"
+#include "NiagaraSystem.h"
 #include "F3MashUpCharacter.generated.h"
 
 class UInputComponent;
@@ -61,10 +62,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	float FireRate;
 
@@ -87,6 +84,9 @@ public:
 	/** Turning Parameter for checking when the player is crushed*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
 	float CrushedCapsuleTraceFactor = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Gameplay)
+	UNiagaraSystem* shotHitParticle;
 
 	void CheckIfPlayerCrushed();
 
@@ -186,6 +186,9 @@ private:
 	void _OnDamaged(float damage, int damagingPlayerId = -1);
 
 	void AllowFire();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastCreateShotParticle(FVector particleLocation);
 
 
 	UFUNCTION()

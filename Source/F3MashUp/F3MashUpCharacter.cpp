@@ -14,6 +14,7 @@
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "BoardPieceCPP.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraFunctionLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Log, All);
 
@@ -36,10 +37,6 @@ AF3MashUpCharacter::AF3MashUpCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
-
-	// Default offset from the character location for projectiles to spawn
-	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun 
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
@@ -280,14 +277,15 @@ void AF3MashUpCharacter::_OnFire(FVector ForwardVector)
 	{
 		AActor* hitActor = OutHit.GetActor();
 
+		MulticastCreateShotParticle(OutHit.Location);
+
 		if (hitActor && hitActor != this && hitActor->GetClass()->IsChildOf(AF3MashUpCharacter::StaticClass()))
 		{
 			AF3MashUpCharacter* other = Cast<AF3MashUpCharacter, AActor>(hitActor);
 
 			other->ServerOnDamaged(1.0f, OwningPlayerID);
 		}
-
-		if (hitActor && hitActor->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
+		else if (hitActor && hitActor->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
 		{
 			ABoardPieceCPP* other = Cast<ABoardPieceCPP, AActor>(hitActor);
 
@@ -335,6 +333,20 @@ void AF3MashUpCharacter::_OnDamaged(float damage, int damagingPlayerId)
 		}
 		Destroy();
 	}
+}
+
+void AF3MashUpCharacter::MulticastCreateShotParticle_Implementation(FVector particleLocation)
+{
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(),
+		shotHitParticle,
+		particleLocation,
+		FRotator(1),
+		FVector(1),
+		true,
+		true,
+		ENCPoolMethod::AutoRelease,
+		true);
 }
 
 void AF3MashUpCharacter::OnResetVR()
