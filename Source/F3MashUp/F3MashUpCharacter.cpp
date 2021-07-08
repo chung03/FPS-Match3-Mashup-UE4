@@ -118,7 +118,6 @@ void AF3MashUpCharacter::_DoCapsuleCheck() {
 
 		for (FHitResult hitResult : outHits)
 		{
-			hitResult.Actor->GetFullName().GetCharArray();
 			UE_LOG(LogFPChar, Log, TEXT("AF3MashUpCharacter::_DoCapsuleCheck - Capsule Sweep Hit: %s"), *(hitResult.Actor->GetFullName()));
 
 			if (hitResult.GetActor()->GetClass()->IsChildOf(ABoardPieceCPP::StaticClass()))
