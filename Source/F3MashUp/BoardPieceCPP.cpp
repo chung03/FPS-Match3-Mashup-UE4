@@ -5,6 +5,7 @@
 #include "BoardPieceHolderCPP.h"
 #include "F3MashUpCharacter.h"
 #include "ScorePickUpCPP.h"
+#include "F3MashUpGameMode.h"
 #include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBoardPiece, Log, All);
@@ -219,6 +220,15 @@ void ABoardPieceCPP::_DamagePiece(int damagingPlayerId, float damage)
 	{
 		isDying = true;
 		OwningPieceHolder->ServerReplaceCurrentBoardPiece();
+		AGameModeBase* gameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode() : NULL;
+		if (gameMode)
+		{
+			AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
+			if (f3MashUpGameMode)
+			{
+				f3MashUpGameMode->ChangeScoreOfPlayer(damagingPlayerId, 1);
+			}
+		}
 	}
 }
 
