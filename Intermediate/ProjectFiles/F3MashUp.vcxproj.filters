@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\F3MashUp.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{388F10F4-A4B6-4583-9B0A-8F1F46A4A2C1}</UniqueIdentifier>
+      <UniqueIdentifier>{A31F9F27-2B56-4FF0-AC4C-ED6B24C19837}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\F3MashUp.Target.cs">
       <Filter>Source</Filter>
@@ -15,7 +15,7 @@
     <None Include="..\..\LICENSE" />
     <None Include="..\..\README.md" />
     <Filter Include="Config">
-      <UniqueIdentifier>{06F0DE54-6536-478B-9798-76690503337E}</UniqueIdentifier>
+      <UniqueIdentifier>{DDED2744-A68D-4BFD-8F59-BCEA041D90C0}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -33,7 +33,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\F3MashUp">
-      <UniqueIdentifier>{15B75D00-7C02-4951-9FD4-2A71B9A2865A}</UniqueIdentifier>
+      <UniqueIdentifier>{D7B0B5BA-F02B-4735-AC15-B4D25D98E04C}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\BoardPieceCPP.cpp">
       <Filter>Source\F3MashUp</Filter>
@@ -117,12 +117,18 @@
       <Filter>Source\F3MashUp</Filter>
     </ClInclude>
     <Filter Include="Source\F3MashUp\TestingFunctions">
-      <UniqueIdentifier>{5CC95156-A66C-40B8-95D5-D9122F0AB974}</UniqueIdentifier>
+      <UniqueIdentifier>{6F1711C5-39AC-446D-87E9-66F7FACD52B1}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.cpp">
       <Filter>Source\F3MashUp\TestingFunctions</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.h">
+      <Filter>Source\F3MashUp\TestingFunctions</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\GameModeAndStateTestingUtilsCPP.cpp">
+      <Filter>Source\F3MashUp\TestingFunctions</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\TestingFunctions\GameModeAndStateTestingUtilsCPP.h">
       <Filter>Source\F3MashUp\TestingFunctions</Filter>
     </ClInclude>
   </ItemGroup>
