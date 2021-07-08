@@ -18,4 +18,6 @@ class F3MASHUP_API AF3MashUpGameState : public AGameState
 public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
 	TArray<FPlayerToScoreStruct> PlayerScores;
+
+	void ResetGameState();
 };

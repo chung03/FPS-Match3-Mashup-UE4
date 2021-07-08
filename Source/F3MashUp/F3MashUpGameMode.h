@@ -28,6 +28,8 @@ public:
 
 	bool ShouldMatchEnd();
 
+	void ResetGameMode();
+
 protected:
 	virtual void HandleMatchHasEnded() override;
 

@@ -3,6 +3,7 @@
 
 #include "F3MashUpGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "PlayerToScoreStruct.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameState, Warning, All);
 
@@ -13,4 +14,9 @@ void AF3MashUpGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 	UE_LOG(LogFpsMashUpGameState, Warning, TEXT("AF3MashUpGameState::GetLifetimeReplicatedProps - Properties were replicated"));
 
 	DOREPLIFETIME(AF3MashUpGameState, PlayerScores);
+}
+
+void AF3MashUpGameState::ResetGameState()
+{
+	PlayerScores = TArray<FPlayerToScoreStruct>();
 }

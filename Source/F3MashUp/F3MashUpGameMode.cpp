@@ -107,3 +107,8 @@ void AF3MashUpGameMode::HandleMatchHasEnded()
 
 	UGameplayStatics::OpenLevel(GetWorld(), "TitleScreen", true);
 }
+
+void AF3MashUpGameMode::ResetGameMode()
+{
+	PlayerScores = TMap<int, int>();
+}

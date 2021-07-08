@@ -5,6 +5,10 @@
 #include "../F3MashUpGameMode.h"
 #include "../F3MashUpGameState.h"
 #include "../PlayerToScoreStruct.h"
+#include "../BoardPieceCPP.h"
+#include "../BoardPieceHolderCPP.h"
+#include "../ScorePickUpCPP.h"
+#include "../F3MashUpCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void UGameModeAndStateTestingUtilsCPP::IsPlayerIdInGameState(int playerId, AFunctionalTest* FunctionalTestInstance)
@@ -72,4 +76,57 @@ AF3MashUpGameState* UGameModeAndStateTestingUtilsCPP::GetGameStateForTest(AFunct
 	}
 
 	return nullptr;
+}
+
+void UGameModeAndStateTestingUtilsCPP::ResetGameModeAndState(AFunctionalTest* FunctionalTestInstance)
+{
+	AGameStateBase* gameState = FunctionalTestInstance->GetWorld()->GetGameState();
+	if (gameState)
+	{
+		AF3MashUpGameState* f3MashUpGameState = Cast<AF3MashUpGameState, AGameStateBase>(gameState);
+		if (f3MashUpGameState)
+		{
+			f3MashUpGameState->ResetGameState();
+		}
+	}
+
+	AGameModeBase* gameMode = FunctionalTestInstance->GetWorld()->GetAuthGameMode();
+	if (gameMode)
+	{
+		AF3MashUpGameMode* f3MashUpGameMode = Cast<AF3MashUpGameMode, AGameModeBase>(gameMode);
+		if (f3MashUpGameMode)
+		{
+			f3MashUpGameMode->ResetGameMode();
+		}
+	}
+}
+
+void UGameModeAndStateTestingUtilsCPP::CleanUpAllGameplayThings(AFunctionalTest* FunctionalTestInstance)
+{
+	ResetGameModeAndState(FunctionalTestInstance);
+
+	RemoveAllActorsOfClass(FunctionalTestInstance, ABoardPieceCPP::StaticClass());
+	RemoveAllActorsOfClass(FunctionalTestInstance, ABoardPieceHolderCPP::StaticClass());
+	RemoveAllActorsOfClass(FunctionalTestInstance, AF3MashUpCharacter::StaticClass());
+	RemoveAllActorsOfClass(FunctionalTestInstance, AScorePickUpCPP::StaticClass());
+
+	UObject* ClassPackage = ANY_PACKAGE;
+	UClass* Result = FindObject<UClass>(ClassPackage, TEXT("/Game/FirstPersonCPP/Blueprints/ScorePickups/ScorePickUpSpawnerBP.ScorePickUpSpawnerBP_C"));
+
+	RemoveAllActorsOfClass(FunctionalTestInstance, Result);
+}
+
+void UGameModeAndStateTestingUtilsCPP::RemoveAllActorsOfClass(AFunctionalTest* FunctionalTestInstance, UClass* classType)
+{
+	UWorld* world = FunctionalTestInstance->GetWorld();
+
+	TArray<AActor*> foundActors;
+	UGameplayStatics::GetAllActorsOfClass(world, classType, foundActors);
+
+	for (AActor * actor : foundActors)
+	{
+		if (actor && !actor->IsPendingKill()) {
+			actor->Destroy();
+		}
+	}
 }

@@ -31,4 +31,12 @@ class F3MASHUP_API UGameModeAndStateTestingUtilsCPP : public UBlueprintFunctionL
 
 	UFUNCTION(BlueprintCallable, Category = "Game Mode And Game State Testing")
 	static AF3MashUpGameState* GetGameStateForTest(AFunctionalTest* FunctionalTestInstance);
+
+	UFUNCTION(BlueprintCallable, Category = "Game Mode And Game State Testing")
+	static void ResetGameModeAndState(AFunctionalTest* FunctionalTestInstance);
+
+	UFUNCTION(BlueprintCallable, Category = "Functional Testing Utils")
+	static void CleanUpAllGameplayThings(AFunctionalTest* FunctionalTestInstance);
+
+	static void RemoveAllActorsOfClass(AFunctionalTest* FunctionalTestInstance, UClass* classType);
 };
