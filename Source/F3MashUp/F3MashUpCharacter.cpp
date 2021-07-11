@@ -62,7 +62,10 @@ void AF3MashUpCharacter::BeginPlay()
 	InitialSpawnLocation = GetActorLocation();
 	InitialSpawnRotation = GetActorRotation();
 
-	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AF3MashUpCharacter::OnHit);
+	if (GetWorld()->IsServer())
+	{
+		GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AF3MashUpCharacter::OnHit);
+	}
 }
 
 void AF3MashUpCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
