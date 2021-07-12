@@ -37,19 +37,6 @@ AF3MashUpCharacter::AF3MashUpCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
-	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun 
-	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
-
-	// Create VR Controllers.
-	R_MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("R_MotionController"));
-	R_MotionController->MotionSource = FXRMotionControllerBase::RightHandSourceId;
-	R_MotionController->SetupAttachment(RootComponent);
-	L_MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("L_MotionController"));
-	L_MotionController->SetupAttachment(RootComponent);
-
-	// Uncomment the following line to turn motion controllers on by default:
-	//bUsingMotionControllers = true;
 }
 
 void AF3MashUpCharacter::BeginPlay()
@@ -180,9 +167,6 @@ void AF3MashUpCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
-
-	// Enable touchscreen input
-	EnableTouchscreenMovement(PlayerInputComponent);
 }
 
 float AF3MashUpCharacter::GetMaxHealth()
@@ -351,36 +335,6 @@ void AF3MashUpCharacter::MulticastCreateShotParticle_Implementation(FVector part
 		true);
 }
 
-void AF3MashUpCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void AF3MashUpCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == true)
-	{
-		return;
-	}
-	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void AF3MashUpCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	TouchItem.bIsPressed = false;
-}
-
 void AF3MashUpCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
@@ -409,21 +363,6 @@ void AF3MashUpCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-bool AF3MashUpCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)
-{
-	if (FPlatformMisc::SupportsTouchInput() || GetDefault<UInputSettings>()->bUseMouseForTouch)
-	{
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AF3MashUpCharacter::BeginTouch);
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &AF3MashUpCharacter::EndTouch);
-
-		//Commenting this out to be more consistent with FPS BP template.
-		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AF3MashUpCharacter::TouchUpdate);
-		return true;
-	}
-	
-	return false;
 }
 
 void AF3MashUpCharacter::HandleFire_Implementation(bool isPressed)
@@ -482,7 +421,6 @@ void AF3MashUpCharacter::HandleLookUpRate_Implementation(float axisValue)
 
 void AF3MashUpCharacter::HandleResetVR_Implementation()
 {
-	OnResetVR();
 }
 
 void AF3MashUpCharacter::HandleRotateBoardPieceRight_Implementation(bool isPressed)

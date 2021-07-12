@@ -20,14 +20,6 @@ class AF3MashUpCharacter : public ACharacter, public IPlayerInputAccepter, publi
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
-	/** Motion controller (right hand) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UMotionControllerComponent* R_MotionController;
-
-	/** Motion controller (left hand) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UMotionControllerComponent* L_MotionController;
-
 	UPROPERTY(Replicated)
 	float Health;
 
@@ -67,10 +59,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	float MaxHealth;
-
-	/** Whether to use motion controller location for aiming. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	uint32 bUsingMotionControllers : 1;
 
 	/** How far away from the character the line trace will start.
 	   This is to prevent line traces from hitting the body of the FPS character */
@@ -129,10 +117,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnRotateBoardPiece(float degrees);
 
-	/** Resets HMD orientation and position in VR. */
-	UFUNCTION(BlueprintCallable)
-	void OnResetVR();
-
 	/** Handles moving forward/backward */
 	UFUNCTION(BlueprintCallable)
 	void MoveForward(float Val);
@@ -154,19 +138,6 @@ protected:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void LookUpAtRate(float Rate);
-
-	struct TouchData
-	{
-		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
-		bool bIsPressed;
-		ETouchIndex::Type FingerIndex;
-		FVector Location;
-		bool bMoved;
-	};
-	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
-	TouchData	TouchItem;
 	
 private:
 
@@ -205,14 +176,6 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
-
-	/* 
-	 * Configures input for touchscreen devices if there is a valid touch interface for doing so 
-	 *
-	 * @param	InputComponent	The input component pointer to bind controls to
-	 * @returns true if touch controls were enabled.
-	 */
-	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
 public:
 	/** Returns FirstPersonCameraComponent subobject **/
