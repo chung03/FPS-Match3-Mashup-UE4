@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\F3MashUp.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{A31F9F27-2B56-4FF0-AC4C-ED6B24C19837}</UniqueIdentifier>
+      <UniqueIdentifier>{5D025829-490D-4C05-AEE2-4D046E215888}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\F3MashUp.Target.cs">
       <Filter>Source</Filter>
@@ -15,7 +15,7 @@
     <None Include="..\..\LICENSE" />
     <None Include="..\..\README.md" />
     <Filter Include="Config">
-      <UniqueIdentifier>{DDED2744-A68D-4BFD-8F59-BCEA041D90C0}</UniqueIdentifier>
+      <UniqueIdentifier>{AA132C20-9C53-47AF-BF78-61E8FE6DA729}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -33,7 +33,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\F3MashUp">
-      <UniqueIdentifier>{D7B0B5BA-F02B-4735-AC15-B4D25D98E04C}</UniqueIdentifier>
+      <UniqueIdentifier>{E475CADB-94E1-4FD3-AB0A-9156CA0A71AE}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\BoardPieceCPP.cpp">
       <Filter>Source\F3MashUp</Filter>
@@ -92,6 +92,12 @@
     <ClInclude Include="..\..\Source\F3MashUp\F3MashUpProjectile.h">
       <Filter>Source\F3MashUp</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\F3MashUp\FPSMatch3PlayerControllerCPP.cpp">
+      <Filter>Source\F3MashUp</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\F3MashUp\FPSMatch3PlayerControllerCPP.h">
+      <Filter>Source\F3MashUp</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\F3MashUp\IPlayerInputAccepter.cpp">
       <Filter>Source\F3MashUp</Filter>
     </ClCompile>
@@ -117,7 +123,7 @@
       <Filter>Source\F3MashUp</Filter>
     </ClInclude>
     <Filter Include="Source\F3MashUp\TestingFunctions">
-      <UniqueIdentifier>{6F1711C5-39AC-446D-87E9-66F7FACD52B1}</UniqueIdentifier>
+      <UniqueIdentifier>{801CA400-4D67-4B2D-BD2E-C720C6656991}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\F3MashUp\TestingFunctions\BoardPieceTestingUtilitiesCPP.cpp">
       <Filter>Source\F3MashUp\TestingFunctions</Filter>

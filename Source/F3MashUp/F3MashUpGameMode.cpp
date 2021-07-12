@@ -6,6 +6,7 @@
 #include "F3MashUpGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
+#include "FPSMatch3PlayerControllerCPP.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Log, All);
 
@@ -23,6 +24,8 @@ AF3MashUpGameMode::AF3MashUpGameMode()
 	HUDClass = AF3MashUpHUD::StaticClass();
 
 	PlayerScores = TMap<int, int>();
+
+	nextPlayerID = 0;
 }
 
 
@@ -101,14 +104,49 @@ bool AF3MashUpGameMode::ShouldMatchEnd()
 	return false;
 }
 
+
 void AF3MashUpGameMode::HandleMatchHasEnded()
 {
+	Super::HandleMatchHasEnded();
+
 	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::HandleMatchHasEnded - The match has ended"));
 
 	UGameplayStatics::OpenLevel(GetWorld(), "TitleScreen", true);
 }
 
+
 void AF3MashUpGameMode::ResetGameMode()
 {
 	PlayerScores = TMap<int, int>();
+}
+
+void AF3MashUpGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	AFPSMatch3PlayerControllerCPP* controller = Cast<AFPSMatch3PlayerControllerCPP, APlayerController>(NewPlayer);
+	if (controller)
+	{
+		PlayerScores.Add(nextPlayerID, 0);
+		controller->SetOwningPlayerID(nextPlayerID);
+		++nextPlayerID;
+	}
+
+	CopyScoresToGameState();
+}
+
+void AF3MashUpGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+
+	AFPSMatch3PlayerControllerCPP* controller = Cast<AFPSMatch3PlayerControllerCPP, AController>(Exiting);
+	if (controller)
+	{
+		if (!PlayerScores.Contains(controller->GetOwningPlayerID()))
+		{
+			PlayerScores.Remove(controller->GetOwningPlayerID());
+		}
+	}
+
+	CopyScoresToGameState();
 }
