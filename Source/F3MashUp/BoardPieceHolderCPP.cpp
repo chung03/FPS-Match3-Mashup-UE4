@@ -51,7 +51,7 @@ void ABoardPieceHolderCPP::BeginDestroy()
 {
 	Super::BeginDestroy();
 
-	if (CurrentBoardPiece) {
+	if (CurrentBoardPiece && IsValid(CurrentBoardPiece)) {
 		GetWorld()->DestroyActor(CurrentBoardPiece);
 	}
 }
