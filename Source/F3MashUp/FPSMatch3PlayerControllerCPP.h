@@ -16,9 +16,18 @@ class F3MASHUP_API AFPSMatch3PlayerControllerCPP : public APlayerController
 	
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString PlayerName;
+
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SetOwningPlayerID(int newOwningPlayerID);
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	int GetOwningPlayerID();
+
+	UFUNCTION(Client, Reliable)
+	void ClientSendPlayerName();
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetPlayerNameInGameMode(const FString& newPlayerName);
 };

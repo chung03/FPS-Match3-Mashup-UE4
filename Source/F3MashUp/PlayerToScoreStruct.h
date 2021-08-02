@@ -14,7 +14,7 @@ struct F3MASHUP_API FPlayerToScoreStruct
 	GENERATED_USTRUCT_BODY()
 
 public:
-	FPlayerToScoreStruct(int _PlayerId, int _PlayerScore);
+	FPlayerToScoreStruct(int _PlayerId, int _PlayerScore, FString _PlayerName);
 	FPlayerToScoreStruct();
 	~FPlayerToScoreStruct();
 
@@ -23,4 +23,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerScore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString PlayerName;
 };

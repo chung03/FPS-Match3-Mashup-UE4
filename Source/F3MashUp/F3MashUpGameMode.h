@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "PlayerToScoreStruct.h"
+#include "FPSMatch3PlayerControllerCPP.h"
 #include "F3MashUpGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -26,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeScoreOfPlayer(int playerID, int scoreChange);
 
+	UFUNCTION(BlueprintCallable)
+	void ChangeNameOfPlayer(AFPSMatch3PlayerControllerCPP* controller, const FString& newPlayerName);
+
 	bool ShouldMatchEnd();
 
 	void ResetGameMode();
@@ -39,7 +44,10 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere)
-	TMap<int, int> PlayerScores;
+	TMap<int, FPlayerToScoreStruct> PlayerScores;
+
+	UPROPERTY(EditAnywhere)
+	TMap<AFPSMatch3PlayerControllerCPP*, int> PlayerControllerToIdMap;
 
 	void CopyScoresToGameState();
 
