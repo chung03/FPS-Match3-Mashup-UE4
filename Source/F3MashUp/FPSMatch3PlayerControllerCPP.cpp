@@ -4,16 +4,19 @@
 #include "FPSMatch3PlayerControllerCPP.h"
 #include "F3MashUpGameMode.h"
 #include "ClientSavedDataCPP.h"
+#include "F3MashUpGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 void AFPSMatch3PlayerControllerCPP::ClientSendPlayerName_Implementation()
 {
-	if (UClientSavedDataCPP* LoadedGame = Cast<UClientSavedDataCPP>(UGameplayStatics::LoadGameFromSlot("F3MashUpClientName", 0)))
+	UGameInstance* gameInstance = GetGameInstance();
+	UF3MashUpGameInstance* f3MashUpGameInstance = Cast<UF3MashUpGameInstance>(gameInstance);
+	if (f3MashUpGameInstance)
 	{
 		// The operation was successful, so LoadedGame now contains the data we saved earlier.
-		UE_LOG(LogTemp, Warning, TEXT("LOADED: %s"), *LoadedGame->PlayerName);
+		UE_LOG(LogTemp, Warning, TEXT("LOADED: %s"), *f3MashUpGameInstance->PlayerName);
 
-		PlayerName = LoadedGame->PlayerName;
+		PlayerName = f3MashUpGameInstance->PlayerName;
 	}
 
 	ServerSetPlayerNameInGameMode(PlayerName);
