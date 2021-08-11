@@ -41,6 +41,7 @@ public:
 
 protected:
 	virtual void HandleMatchHasEnded() override;
+	virtual void HandleMatchHasStarted() override;
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -50,6 +51,8 @@ private:
 	TMap<AFPSMatch3PlayerControllerCPP*, int> PlayerControllerToIdMap;
 
 	void CopyScoresToGameState();
+
+	void ResetGameInstanceScoreState();
 
 	int nextPlayerID;
 };

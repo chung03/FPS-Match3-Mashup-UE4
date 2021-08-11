@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "FPSMatch3PlayerControllerCPP.h"
+#include "F3MashUpGameInstance.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFpsMashUpGameMode, Log, All);
 
@@ -115,14 +116,46 @@ void AF3MashUpGameMode::HandleMatchHasEnded()
 
 	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::HandleMatchHasEnded - The match has ended"));
 
-	UGameplayStatics::OpenLevel(GetWorld(), "TitleScreen", true);
+	UGameInstance* gameInstance = GetGameInstance();
+	UF3MashUpGameInstance* f3MashUpGameInstance = Cast<UF3MashUpGameInstance>(gameInstance);
+	if (f3MashUpGameInstance)
+	{
+		for (TPair<int, FPlayerToScoreStruct> pair : PlayerScores) {
+			f3MashUpGameInstance->PlayerScoreStates.Add(pair.Value);
+		}
+	}
+
+	GetWorld()->ServerTravel("EndMatchScreen?Listen", true, false);
+
+	//UGameplayStatics::OpenLevel(GetWorld(), "TitleScreen", true);
 }
+
+void AF3MashUpGameMode::HandleMatchHasStarted()
+{
+	Super::HandleMatchHasStarted();
+
+	UE_LOG(LogFpsMashUpGameMode, Log, TEXT("AF3MashUpGameMode::HandleMatchHasStarted - The match has started"));
+
+	ResetGameInstanceScoreState();
+}
+
 
 
 void AF3MashUpGameMode::ResetGameMode()
 {
 	PlayerScores = TMap<int, FPlayerToScoreStruct>();
 	PlayerControllerToIdMap = TMap<AFPSMatch3PlayerControllerCPP*, int>();
+	ResetGameInstanceScoreState();
+}
+
+void AF3MashUpGameMode::ResetGameInstanceScoreState()
+{
+	UGameInstance* gameInstance = GetGameInstance();
+	UF3MashUpGameInstance* f3MashUpGameInstance = Cast<UF3MashUpGameInstance>(gameInstance);
+	if (f3MashUpGameInstance)
+	{
+		f3MashUpGameInstance->ResetGameStats();
+	}
 }
 
 void AF3MashUpGameMode::PostLogin(APlayerController* NewPlayer)
